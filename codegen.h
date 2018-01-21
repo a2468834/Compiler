@@ -4,6 +4,13 @@
 extern int line_no; /* declared in scaner.l */
 extern FILE *output_file;/* declared in parser.y */
 
+struct method_info
+{
+	char type;
+	bool is_array;
+	struct *method_info;
+};
+
 void CodeGen(struct nodeType *ASTROOT);
 
 // initialize the output file which is java bytecode
