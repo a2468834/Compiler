@@ -8,6 +8,7 @@ struct method_info
 {
 	char type;
 	bool is_array;
+	int array_dim;
 	struct *method_info;
 };
 
