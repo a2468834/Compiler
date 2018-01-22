@@ -48,8 +48,6 @@ extern struct SymTable SymbolTable;
 struct SymTableEntry* findSymbol(char *s, int itsscope);
 struct SymTableEntry* findSymbol_noscope(char *s);
 void setParamNum(char *s, int paramNum);
-//void setOwnedBy(struct nodeType *arguments_node, int itsscope, char *function_name);
-
 
 struct SymTableEntry* addVariable(
   char *s,

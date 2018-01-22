@@ -14,6 +14,7 @@ END;
 
 FUNCTION xx (zz: array [ 1 .. 10 ] of array [ 1 .. 10 ] of REAL): INTEGER;
 VAR aa: REAL;
+var kk: INTEGER;
 BEGIN
 	xx := a+b // No error since a, b are global variable
 END;
