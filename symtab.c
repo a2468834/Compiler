@@ -49,20 +49,6 @@ void setParamNo(char *s, int paramNo)
     }
 }
 
-int setValueValid(char *s, int _scope, char valueValid)
-{
-  for(int i=0; i<SymbolTable.size; i++)
-  {
-    struct SymTableEntry entry = SymbolTable.entries[i];
-    if(strcmp(s, entry.name) == 0 && _scope == entry.scope)
-    {
-      SymbolTable.entries[i].valueValid = valueValid;
-      return 0;
-    }
-  }
-  return-1;
-}
-
 struct SymTableEntry* addVariable(
   char *s,
   enum StdType type,
@@ -99,7 +85,6 @@ struct SymTableEntry* addVariable(
     SymbolTable.entries[index].isFunction = isFunction;
     SymbolTable.entries[index].scope = itsscope;
     SymbolTable.entries[index].paramNo = index;
-    SymbolTable.entries[index].valueValid = VALUE_INVALID;
 
     return &SymbolTable.entries[index];
   }
@@ -172,7 +157,6 @@ void semanticCheck(struct nodeType *node)
 			curfunc = (char*)malloc(strlen(idNode->string)+1);
 			strcpy(curfunc, idNode->string);
 			semanticCheck(nthChild(2, node));
-			//setParamNo(idNode->string, idNode->rsibling->paramNo);
 			semanticCheck(nthChild(4, node));
 			semanticCheck(nthChild(5, node));
 			free(curfunc);
@@ -251,11 +235,7 @@ void semanticCheck(struct nodeType *node)
           idNode->arraydepth = arraydepth;
         }
 
-        //printf("%d\n", scope);
         addVariable(idNode->string, valueType, arraydepth, idxstart, idxend, 0, scope, node->line_no);
-        //printf("add PARAMLIST\n");
-        char valueValid = (valueType == TypeInt)? VALUE_I_VALID : VALUE_R_VALID;
-        setValueValid(idNode->string, scope, valueValid);
         idNode = idNode->rsibling;
         node->paramNo++;
       }while(idNode != idList->child);
@@ -272,9 +252,6 @@ void semanticCheck(struct nodeType *node)
 
     case NODE_DECLARATIONS:
     {
-      //printTable();
-      //printf("%d\n", scope);
-
       if (node->child == NULL)break;
 
       struct nodeType *typeNode = nthChild(2, node);
@@ -320,22 +297,25 @@ void semanticCheck(struct nodeType *node)
           }
         }
       }
-      else valueType = TypeReal;
+      else printf("Error(%d): unidentified type %d\n", node->line_no, typeNode->nodeType);
 
-      struct nodeType *idList = nthChild(1, node);
-      struct nodeType *idNode = idList->child;
-      do
+      struct nodeType *id_list = nthChild(1, node);
+
+      for(int i=0; i<id_list->child_num; i++)
       {
-        if (typeNode->nodeType == ARRAY)
+        struct nodeType *id_list_child = nthChild(i+1, id_list);
+
+        if(findSymbol(id_list_child->string, 1) != 0)
         {
-          idNode->idxstart = idxstart;
-          idNode->idxend = idxend;
-          idNode->arraydepth = arraydepth;
+          printf("Error(%d): duplicate declaration of variable %s\n", node->line_no, id_list_child->string);
+          exit(EXIT_FAILURE);
         }
-        addVariable(idNode->string, valueType, arraydepth, idxstart, idxend, 0, scope, node->line_no);
-        //printf("add DECLARATIONS\n");
-        idNode = idNode->rsibling;
-      } while(idNode != idList->child);
+
+        else
+        {
+          addVariable(id_list_child->string, valueType, arraydepth, idxstart, idxend, 0, scope, node->line_no);
+        }
+      }
 
       semanticCheck(nthChild(3, node));
 
@@ -408,6 +388,7 @@ void semanticCheck(struct nodeType *node)
       if(entry == 0)
       {
         entry = findSymbol(node->string, 1);
+
         if(entry == 0)
         {
           printf("Error(%d): undeclared variable \"%s\"\n", node->line_no, node->string);
@@ -416,8 +397,6 @@ void semanticCheck(struct nodeType *node)
 
         node->isFunction = entry->isFunction;
         node->paramNo = entry->paramNo;
-
-        //printf("%s func:%d\n", node->string, entry->isFunction);
       }
 
       node->entry = entry;
@@ -425,9 +404,6 @@ void semanticCheck(struct nodeType *node)
       node->arraydepth = entry->arraydepth;
       node->idxstart = entry->idxstart;
       node->idxend = entry->idxend;
-      node->valueValid = entry->valueValid;
-
-      //printf("%s valueType:%d\n", node->string, node->valueType);
 
       if (node->arraydepth > 0)
       {
@@ -466,7 +442,6 @@ void semanticCheck(struct nodeType *node)
     {
       struct nodeType *child = nthChild(1, node);
       semanticCheck(child);
-      node->valueValid = child->valueValid;
       node->valueType = child->valueType;
 
       // node->valueType is TypeInt means that it's a integer
@@ -487,15 +462,16 @@ void semanticCheck(struct nodeType *node)
       semanticCheck(child2);
 
       if( child1->valueType != child2->valueType 
-          || child1->arraydepth != child2->arraydepth 
-          || child1->valueValid != child2->valueValid 
-          )
+          || child1->arraydepth != child2->arraydepth )
       {
+        printf("op:%d\n", node->op);
+        printf("child1, child2:\n");
+        printf("%d   %d\n", child1->valueType, child2->valueType);
+        printf("%d   %d\n", child1->arraydepth, child2->arraydepth);
         printf("Error(%d): type mismatch for operator\n", node->line_no);
         exit(EXIT_FAILURE);
       }
 
-      node->valueValid = child1->valueValid;
       node->valueType = child1->valueType;
       
       break;
@@ -512,7 +488,7 @@ void semanticCheck(struct nodeType *node)
         //This is return value
         if(strcmp(child1->string, curfunc) == 0)
         {
-          setValueValid(child1->string, 1, child2->valueValid);
+          // empty method
         }
         else
         {
@@ -525,28 +501,10 @@ void semanticCheck(struct nodeType *node)
          you should implement the checking for array type by yourself */
       if(child1->valueType != child2->valueType || child1->arraydepth != child2->arraydepth)
       {
-        //printf("valueType child1:%d, child2:%d\n", child1->valueType, child2->valueType);
-        //printf("arraydepth child1:%d, child2:%d\n", child1->arraydepth, child2->arraydepth);
-        //printf("value child1:%d, child2:%d\n", child1->rValue, child2->iValue);
         printf("Error(%d): type mismatch for assignment\n", node->line_no);
         exit(EXIT_FAILURE);
       }
-      /*
-      //Check if oprands have been initialized
-      if (child1->valueValid == VALUE_INVALID && child1->nodeType == NODE_VARIABLE)
-        if (node->nodeType == NODE_OP)
-          printf("Warning: use \"%s\" before initialization", child1->string);
-
-      if (child2->valueValid == VALUE_INVALID && child2->nodeType == NODE_VARIABLE)
-        printf("Warning: use \"%s\" before initialization", child2->string);
-      */
       node->valueType = child1->valueType;
-      
-      if (node->nodeType == ASSIGNMENT && child1->nodeType == NODE_VARIABLE)
-        setValueValid(child1->string, scope, child2->valueValid);
-
-      if (node->nodeType == NODE_OP)
-        node->valueValid = child1->valueValid;
 
       return;
     }
@@ -577,17 +535,21 @@ void semanticCheck(struct nodeType *node)
       return;
     }
 
-      //case NODE_STMTLIST:
+    case NODE_STMTLIST:
+    {
+      for(int i=0; i<node->child_num; i++)
+      {
+        struct nodeType *assignment_node = nthChild(i+1, node);
+        semanticCheck(assignment_node);
+      }
     }
+  }
 
   /* Default action for other nodes not listed in the switch-case */
-  struct nodeType *child = node->child;
-  if(child != 0)
+  for(int i=0; i<node->child_num; i++)
   {
-    do{
-      semanticCheck(child);
-      child = child->rsibling;
-    }while(child != node->child);
+    struct nodeType *child = nthChild(i+1, node);
+    semanticCheck(child);
   }
 }
 
@@ -599,7 +561,9 @@ void printTable()
 	
   for (int i=0; i<SymbolTable.size; i++)
   {
-		printf("Name: %s ", SymbolTable.entries[i].name);
+    printf("(%d) ", SymbolTable.entries[i].paramNo);
+    printf("Name: %s ", SymbolTable.entries[i].name);
+    printf(", Scope: %d", SymbolTable.entries[i].scope);
     printf(", Type: ");
 
 		if(SymbolTable.entries[i].isFunction == 1)
@@ -608,18 +572,23 @@ void printTable()
       if(SymbolTable.entries[i].type == TypeInt)printf("INTEGER)");
       else if(SymbolTable.entries[i].type == TypeReal)printf("REAL)");
     }
+
 		else if(SymbolTable.entries[i].arraydepth > 0)
     {
       printf("%dD-", SymbolTable.entries[i].arraydepth);
+
+      if(SymbolTable.entries[i].type == TypeInt)printf("INT-");
+      else if(SymbolTable.entries[i].type == TypeReal)printf("REAL-");
+
       printf("ARRAY");
     }
+
 		else if(SymbolTable.entries[i].type == TypeInt)printf("INTEGER");
 		else if(SymbolTable.entries[i].type == TypeReal)printf("REAL");
 		else if(SymbolTable.entries[i].type == TypeString)printf("STRING");
 		else if(SymbolTable.entries[i].type == TypeProc)printf("PROCEDURE");
 
-		printf(", Scope: %d", SymbolTable.entries[i].scope);
-    printf(", ParamNo: %d \n", SymbolTable.entries[i].paramNo);
+		printf("\n");
   }
   printf("+-----------------------------------+\n");
 }

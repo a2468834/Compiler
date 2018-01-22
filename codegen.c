@@ -1,8 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-#include "symtab.h"
 #include "codegen.h"
 
 void CodeGen(struct nodeType *ASTROOT)
@@ -203,7 +198,7 @@ void GenMethod(struct nodeType* parent)
     char *method_info = (char*)malloc(250*sizeof(char));
 
     method_info = GenMethodStart(FUNCTION_node);
-    printf("%s\n", method_info);
+    //printf("%s\n", method_info);
     //GenExpr();
     GenMethodEnd(FUNCTION_node);
   }

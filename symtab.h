@@ -30,7 +30,6 @@ struct SymTableEntry
   int scope;
   int paramNo;
   int line_no;
-  char valueValid;
 };
 
 struct SymTable
@@ -48,7 +47,6 @@ extern struct SymTable SymbolTable;
 struct SymTableEntry* findSymbol(char *s, int itsscope);
 struct SymTableEntry* findSymbol_noscope(char *s);
 void setParamNo(char *s, int paramNo);
-int setValueValid(char *s, int _scope, char valueValid);
 
 struct SymTableEntry* addVariable(
   char *s,

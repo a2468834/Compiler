@@ -170,7 +170,7 @@ void printTree(struct nodeType *node, int ident)
         break;
 
       case NODE_VARIABLE:
-        printf("%s/variable: %s\n", blank, node->string);
+        printf("%s/variable: %s, type:%d\n", blank, node->string, node->valueType);
         ident += 8;
         break;
 
@@ -290,7 +290,7 @@ void printTree(struct nodeType *node, int ident)
         break;
 
       case DIGSEQ:
-        printf("%s%d\n", blank, node->iValue);
+        printf("%s%d, type:%d\n", blank, node->iValue, node->valueType);
         ident += 8;
         break;
 

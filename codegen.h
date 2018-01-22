@@ -1,15 +1,22 @@
 #ifndef __CODEGENE_H__
 #define __CODEGENE_H__
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#include <stdbool.h>
+#include "symtab.h"
+
 extern int line_no; /* declared in scaner.l */
 extern FILE *output_file;/* declared in parser.y */
 
 struct method_info
 {
-	char type;
+	char value_type;
 	bool is_array;
 	int array_dim;
-	struct *method_info;
+	struct method_info *method_info;
 };
 
 void CodeGen(struct nodeType *ASTROOT);

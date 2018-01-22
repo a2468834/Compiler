@@ -5,11 +5,14 @@ VAR d, e: array [ 3 .. 5 ] of array [ 1 .. 10 ] of REAL;
 VAR ff: array [ 1 .. 20 ] of INTEGER;
 
 FUNCTION ss (bb: array [ 1 .. 10 ] of array [ 1 .. 10 ] of REAL): INTEGER;
+VAR aa: INTEGER;
 BEGIN
-	ss := a+b // No error since a, b are global variable
+	a := a+1;
+	ss := a+b; // No error since a, b are global variable
 END;
 
 FUNCTION xx (zz: array [ 1 .. 10 ] of array [ 1 .. 10 ] of REAL): INTEGER;
+VAR rr: REAL;
 BEGIN
 	xx := a+b // No error since a, b are global variable
 END;
@@ -17,7 +20,7 @@ END;
 BEGIN
 	a := 3;
 	b := 4;
-	b := ss
+	b := ss;
 END.
 
 
