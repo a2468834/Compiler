@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include "symtab.h"
 #include "node.h"
 
@@ -36,7 +37,21 @@ struct SymTableEntry* findSymbol_noscope(char *s)
     if(strcmp(s, SymbolTable.entries[i].name) == 0)
       { return &SymbolTable.entries[i]; }
   }
+  return 0;
+}
 
+struct SymTableEntry* findSymbol_localVar(char *name, int itsscope, char* owner)
+{
+  for(int i=0; i<SymbolTable.size; i++)
+  {
+    struct SymTableEntry entry = SymbolTable.entries[i];
+    if(strcmp(entry.name, name) == 0
+       && itsscope == entry.scope
+       && strcmp(entry.owned_by, owner) == 0)
+    {
+      return &SymbolTable.entries[i];
+    }
+  }
   return 0;
 }
 
@@ -47,6 +62,42 @@ void setParamNum(char *s, int paramNum)
       if(strcmp(s, SymbolTable.entries[i].name) == 0)
         { SymbolTable.entries[i].paramNum = paramNum; }
     }
+}
+/*
+void setOwnedBy(struct nodeType *parent, int itsscope, char *function_name)
+{
+  while(true)
+  {
+    struct nodeType *identifier_list_node = nthChild(1, parent);
+    struct nodeType *deeper_node = nthChild(3, parent);
+
+    for(int i=0; i<identifier_list_node->child_num; i++)
+    {
+      struct nodeType *variable_name_node = nthChild(i+1, identifier_list_node);
+      struct SymTableEntry *entry = findSymbol(variable_name_node->string, itsscope);
+      // mark this variable in the symbol table with function_name
+      strcpy(entry->owned_by, function_name);
+    }
+    if(parent->nodeType == NODE_DECLARATIONS)
+    {
+      if(parent->child_num == 0)return;
+      else parent = deeper_node;
+    }
+    
+    else if(parent->nodeType == NODE_PARAMLIST)
+    {
+      if(parent->child_num != 3)return;
+      else parent = deeper_node;
+    }
+  }
+}
+*/
+
+void setOwnedBy(char *variable_name, int itsscope, char *function_name)
+{
+  struct SymTableEntry *entry = findSymbol(variable_name, itsscope);
+  // mark this variable in the symbol table with function_name
+  strcpy(entry->owned_by, function_name);
 }
 
 int GetParamNum(struct nodeType *arguments_node)
@@ -103,15 +154,26 @@ struct SymTableEntry* addVariable(
   int itsscope,
   int line_no)
 {
-  if(findSymbol(s, itsscope) != 0)
+  if(isFunction != 1)
   {
-    printf("Error(%d): duplicate declaration of variable '%s'\n", line_no, s);
-    exit(EXIT_FAILURE);
+    if(findSymbol_localVar(s, itsscope, curfunc) != 0)
+    {
+      printf("Error(%d): duplicate declaration of variable '%s'\n", line_no, s);
+      exit(EXIT_FAILURE);
+    }
+  }
+  else
+  {
+    if(findSymbol(s, itsscope) != 0)
+    {
+      printf("Error(%d): duplicate declaration of function '%s'\n", line_no, s);
+      exit(EXIT_FAILURE);
+    }
   }
 
   // if the name of a variable is the same as a global varable, it means 
   // this variable is that global varable and don't need to add again
-  else if(findSymbol(s, 1) != 0)
+  if(findSymbol(s, 1) != 0)
   {
     struct SymTableEntry *entry = findSymbol(s, 1);
     return entry;
@@ -128,7 +190,7 @@ struct SymTableEntry* addVariable(
     SymbolTable.entries[index].idxstart = idxstart;
     SymbolTable.entries[index].idxend = idxend;
     SymbolTable.entries[index].isFunction = isFunction;
-    owned_by[200]
+    strcpy(SymbolTable.entries[index].owned_by, "\0");
     SymbolTable.entries[index].scope = itsscope;
 
     return &SymbolTable.entries[index];
@@ -173,6 +235,7 @@ void semanticCheck(struct nodeType *node)
       scope = mScope;
       
       struct nodeType *function_name_node = nthChild(1, node);
+      struct nodeType *arguments_node = nthChild(2, node);
       struct nodeType *function_type_node = nthChild(3, node);
 
       enum StdType return_type;
@@ -198,6 +261,9 @@ void semanticCheck(struct nodeType *node)
       semanticCheck(nthChild(2, node));
       semanticCheck(nthChild(4, node));
       semanticCheck(nthChild(5, node));
+
+      //setOwnedBy(arguments_node->child, scope, curfunc);
+      //setOwnedBy(nthChild(4, node), scope, curfunc);
       
       free(curfunc);
       curfunc = NULL;
@@ -279,6 +345,8 @@ void semanticCheck(struct nodeType *node)
         }
 
         addVariable(idNode->string, valueType, arraydepth, idxstart, idxend, 0, scope, node->line_no);
+        if(curfunc != NULL)setOwnedBy(idNode->string, scope, curfunc);
+        //printf("%s %s\n", idNode->string, curfunc);
         idNode = idNode->rsibling;
         //node->paramNum++;
       }while(idNode != idList->child);
@@ -350,6 +418,7 @@ void semanticCheck(struct nodeType *node)
         else
         {
           addVariable(id_list_child->string, valueType, arraydepth, idxstart, idxend, 0, scope, node->line_no);
+          if(curfunc != NULL)setOwnedBy(id_list_child->string, scope, curfunc);
         }
       }
 
@@ -599,7 +668,7 @@ void printTable()
   {
     printf("Name: %s ", SymbolTable.entries[i].name);
     printf(", Scope: %d", SymbolTable.entries[i].scope);
-
+    printf(", Owned by: %s", SymbolTable.entries[i].owned_by);
     printf(", Type: ");
 
 		if(SymbolTable.entries[i].isFunction == 1)

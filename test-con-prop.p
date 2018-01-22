@@ -4,15 +4,16 @@ VAR c: REAL;
 VAR d, e: array [ 3 .. 5 ] of array [ 1 .. 10 ] of REAL;
 VAR ff: array [ 1 .. 20 ] of INTEGER;
 
-FUNCTION ss (bb: array [ 1 .. 10 ] of array [ 1 .. 10 ] of REAL): INTEGER;
+FUNCTION ss (bb: array [ 1 .. 10 ] of array [ 1 .. 10 ] of REAL; jj:INTEGER): INTEGER;
 VAR aa: REAL;
+VAR kk: REAL;
 BEGIN
 	a := a+1;
 	ss := a+b; // No error since a, b are global variable
 END;
 
 FUNCTION xx (zz: array [ 1 .. 10 ] of array [ 1 .. 10 ] of REAL): INTEGER;
-VAR aa: INTEGER;
+VAR aa: REAL;
 BEGIN
 	xx := a+b // No error since a, b are global variable
 END;

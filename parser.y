@@ -114,8 +114,6 @@ declarations :
       addChild($$, $5);
       addChild($$, $1);
 
-      //GenGlobalVar($$);
-
       printf("Reduction: declarations -> declarations VAR identifier_list COLON type SEMICOLON \n");
     }
 	| 

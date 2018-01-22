@@ -560,13 +560,13 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    71,    71,    90,    97,   108,   122,   131,   137,   153,
-     160,   167,   178,   186,   195,   210,   221,   233,   241,   250,
-     259,   273,   280,   289,   299,   308,   315,   326,   335,   341,
-     347,   356,   365,   374,   385,   394,   402,   409,   421,   427,
-     437,   442,   453,   458,   469,   474,   485,   492,   499,   504,
-     509,   519,   524,   533,   538,   547,   552,   557,   562,   567,
-     572,   581,   593,   600,   609
+       0,    71,    71,    90,    97,   108,   120,   129,   135,   151,
+     158,   165,   176,   184,   193,   208,   219,   231,   239,   248,
+     257,   271,   278,   287,   297,   306,   313,   324,   333,   339,
+     345,   354,   363,   372,   383,   392,   400,   407,   419,   425,
+     435,   440,   451,   456,   467,   472,   483,   490,   497,   502,
+     507,   517,   522,   531,   536,   545,   550,   555,   560,   565,
+     570,   579,   591,   598,   607
 };
 #endif
 
@@ -1472,35 +1472,33 @@ yyreduce:
       addChild((yyval.node), (yyvsp[-1].node));
       addChild((yyval.node), (yyvsp[-5].node));
 
-      //GenGlobalVar($$);
-
       printf("Reduction: declarations -> declarations VAR identifier_list COLON type SEMICOLON \n");
     }
-#line 1480 "y.tab.c" /* yacc.c:1646  */
+#line 1478 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 122 "./parser.y" /* yacc.c:1646  */
+#line 120 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = newNode(NODE_DECLARATIONS, line_no);
 
       printf("Reduction: declarations -> lambda\n");
     }
-#line 1490 "y.tab.c" /* yacc.c:1646  */
+#line 1488 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 132 "./parser.y" /* yacc.c:1646  */
+#line 130 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = (yyvsp[0].node);
       
       printf("Reduction: type -> standard_type \n");
     }
-#line 1500 "y.tab.c" /* yacc.c:1646  */
+#line 1498 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 138 "./parser.y" /* yacc.c:1646  */
+#line 136 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = (yyvsp[-7].node);
       (yyval.node)->nodeType = ARRAY;
@@ -1512,65 +1510,65 @@ yyreduce:
 
       printf("Reduction: type -> ARRAY LBRAC num DOTDOT num RBRAC OF type \n");
     }
-#line 1516 "y.tab.c" /* yacc.c:1646  */
+#line 1514 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 154 "./parser.y" /* yacc.c:1646  */
+#line 152 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = newNode(INTEGER, line_no);
       (yyval.node)->nodeType = INTEGER;
 
       printf("Reduction: standard_type -> INTEGER \n");
     }
-#line 1527 "y.tab.c" /* yacc.c:1646  */
+#line 1525 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 161 "./parser.y" /* yacc.c:1646  */
+#line 159 "./parser.y" /* yacc.c:1646  */
     { 
       (yyval.node) = newNode(REAL, line_no);
       (yyval.node)->nodeType = REAL;
 
       printf("Reduction: standard_type -> REAL \n");
     }
-#line 1538 "y.tab.c" /* yacc.c:1646  */
+#line 1536 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 168 "./parser.y" /* yacc.c:1646  */
+#line 166 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = newNode(STRING, line_no);
       (yyval.node)->nodeType = STRING;
 
       printf("Reduction: standard_type -> STRING \n");
     }
-#line 1549 "y.tab.c" /* yacc.c:1646  */
+#line 1547 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 179 "./parser.y" /* yacc.c:1646  */
+#line 177 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = (yyvsp[-2].node);
       addChild((yyvsp[-2].node), (yyvsp[-1].node));
 
       printf("Reduction: subprogram_declarations -> subprogram_declarations subprogram_declaration SEMICOLON \n");
     }
-#line 1560 "y.tab.c" /* yacc.c:1646  */
+#line 1558 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 186 "./parser.y" /* yacc.c:1646  */
+#line 184 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = newNode(NODE_SUBPROGRAMS, line_no);
 
       printf("Reduction: subprogram_declarations -> lambda \n");
     }
-#line 1570 "y.tab.c" /* yacc.c:1646  */
+#line 1568 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 196 "./parser.y" /* yacc.c:1646  */
+#line 194 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = (yyvsp[-2].node);
       addChild((yyval.node), (yyvsp[-1].node));
@@ -1581,11 +1579,11 @@ yyreduce:
 
       printf("Reduction: subprogram_declaration -> subprogram_head declarations compound_statement \n");
     }
-#line 1585 "y.tab.c" /* yacc.c:1646  */
+#line 1583 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 211 "./parser.y" /* yacc.c:1646  */
+#line 209 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = newNode(FUNCTION, line_no);
       addChild((yyval.node), (yyvsp[-4].node));
@@ -1596,11 +1594,11 @@ yyreduce:
 
       printf("Reduction: subprogram_head -> FUNCTION id arguments COLON standard_type SEMICOLON \n");
     }
-#line 1600 "y.tab.c" /* yacc.c:1646  */
+#line 1598 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 222 "./parser.y" /* yacc.c:1646  */
+#line 220 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = newNode(PROCEDURE, line_no);
       addChild((yyval.node), (yyvsp[-2].node));
@@ -1608,32 +1606,32 @@ yyreduce:
 
       printf("Reduction: subprogram_head -> PROCEDURE id arguments SEMICOLON \n");
     }
-#line 1612 "y.tab.c" /* yacc.c:1646  */
+#line 1610 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 234 "./parser.y" /* yacc.c:1646  */
+#line 232 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = newNode(NODE_ARGUMENTS, line_no);
       addChild((yyval.node), (yyvsp[-1].node));
 
       printf("Reduction: arguments -> LPAREN parameter_list RPAREN \n");
     }
-#line 1623 "y.tab.c" /* yacc.c:1646  */
+#line 1621 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 241 "./parser.y" /* yacc.c:1646  */
+#line 239 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = newNode(NODE_ARGUMENTS, line_no);
 
       printf("Reduction: arguments -> lambda\n");
     }
-#line 1633 "y.tab.c" /* yacc.c:1646  */
+#line 1631 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 251 "./parser.y" /* yacc.c:1646  */
+#line 249 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = newNode(NODE_PARAMLIST, line_no);
       addChild((yyval.node), (yyvsp[-2].node));
@@ -1642,11 +1640,11 @@ yyreduce:
 
       printf("Reduction: parameter_list -> optional_var identifier_list COLON type \n");
     }
-#line 1646 "y.tab.c" /* yacc.c:1646  */
+#line 1644 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 260 "./parser.y" /* yacc.c:1646  */
+#line 258 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = newNode(NODE_PARAMLIST, line_no);
       addChild((yyval.node), (yyvsp[-4].node));
@@ -1656,74 +1654,74 @@ yyreduce:
 
       printf("Reduction: parameter_list -> optional_var identifier_list COLON type SEMICOLON parameter_list \n");
     }
-#line 1660 "y.tab.c" /* yacc.c:1646  */
+#line 1658 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 274 "./parser.y" /* yacc.c:1646  */
+#line 272 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = newNode(VAR, line_no);
 
       printf("Reduction: optional_var -> var \n");
     }
-#line 1670 "y.tab.c" /* yacc.c:1646  */
+#line 1668 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 280 "./parser.y" /* yacc.c:1646  */
+#line 278 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = newNode(NODE_OPTIONALVAR, line_no);
 
       printf ("Reduction: optional_var -> lambda \n");
     }
-#line 1680 "y.tab.c" /* yacc.c:1646  */
+#line 1678 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 290 "./parser.y" /* yacc.c:1646  */
+#line 288 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = (yyvsp[-1].node);
       //optional_statements is the code content of a function
 
       printf("Reduction: compound_statement -> PBEGIN optional_statements END \n");
     }
-#line 1691 "y.tab.c" /* yacc.c:1646  */
+#line 1689 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 300 "./parser.y" /* yacc.c:1646  */
+#line 298 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = (yyvsp[0].node);
 
       printf("Reduction: optional_statements -> statement_list \n");
     }
-#line 1701 "y.tab.c" /* yacc.c:1646  */
+#line 1699 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 309 "./parser.y" /* yacc.c:1646  */
+#line 307 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = newNode(NODE_STMTLIST, line_no);
       addChild((yyval.node), (yyvsp[0].node));
 
       printf("Reduction: statement_list -> statement \n");
     }
-#line 1712 "y.tab.c" /* yacc.c:1646  */
+#line 1710 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 316 "./parser.y" /* yacc.c:1646  */
+#line 314 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = (yyvsp[-2].node);
       addChild((yyvsp[-2].node), (yyvsp[0].node));
 
       printf("Reduction: statement_list -> statement_list SEMICOLON statement \n");
     }
-#line 1723 "y.tab.c" /* yacc.c:1646  */
+#line 1721 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 327 "./parser.y" /* yacc.c:1646  */
+#line 325 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = newNode(ASSIGNMENT, line_no);
       addChild((yyval.node), (yyvsp[-2].node));
@@ -1732,31 +1730,31 @@ yyreduce:
 
       printf("Reduction: statement -> variable ASSIGNMENT expression \n");
     }
-#line 1736 "y.tab.c" /* yacc.c:1646  */
+#line 1734 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 336 "./parser.y" /* yacc.c:1646  */
+#line 334 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = (yyvsp[0].node);
 
       printf("Reduction: statement -> procedure_statement \n");
     }
-#line 1746 "y.tab.c" /* yacc.c:1646  */
+#line 1744 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 342 "./parser.y" /* yacc.c:1646  */
+#line 340 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = (yyvsp[0].node);
 
       printf("Reduction: statement -> compound_statement \n");
     }
-#line 1756 "y.tab.c" /* yacc.c:1646  */
+#line 1754 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 348 "./parser.y" /* yacc.c:1646  */
+#line 346 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = newNode(IF, line_no);
       addChild((yyval.node), (yyvsp[-4].node));
@@ -1765,11 +1763,11 @@ yyreduce:
 
       printf("Reduction: statement -> IF expression THEN statement ELSE statement \n");
     }
-#line 1769 "y.tab.c" /* yacc.c:1646  */
+#line 1767 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 357 "./parser.y" /* yacc.c:1646  */
+#line 355 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = newNode(WHILE, line_no);
       addChild((yyval.node), (yyvsp[-2].node));
@@ -1777,32 +1775,32 @@ yyreduce:
 
       printf("Reduction: statement -> WHILE expression DO statement \n");
     }
-#line 1781 "y.tab.c" /* yacc.c:1646  */
+#line 1779 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 365 "./parser.y" /* yacc.c:1646  */
+#line 363 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = newNode(NODE_STMT, line_no);
 
       printf("Reduction: statement -> lambda \n");
 	 }
-#line 1791 "y.tab.c" /* yacc.c:1646  */
+#line 1789 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 375 "./parser.y" /* yacc.c:1646  */
+#line 373 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = (yyvsp[-1].node);
       addChild((yyval.node), (yyvsp[0].node));
 
       printf("Reduction: variable -> id tail \n");
     }
-#line 1802 "y.tab.c" /* yacc.c:1646  */
+#line 1800 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 386 "./parser.y" /* yacc.c:1646  */
+#line 384 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = newNode(NODE_TAIL, line_no);
       addChild((yyval.node), (yyvsp[0].node));
@@ -1810,31 +1808,31 @@ yyreduce:
 
       printf("Reduction: tail -> LBRAC expression RBRAC tail \n");
      }
-#line 1814 "y.tab.c" /* yacc.c:1646  */
+#line 1812 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 394 "./parser.y" /* yacc.c:1646  */
+#line 392 "./parser.y" /* yacc.c:1646  */
     {
       printf("Reduction: tail -> lambda \n");
       (yyval.node) = newNode(NODE_TAIL, line_no);
     }
-#line 1823 "y.tab.c" /* yacc.c:1646  */
+#line 1821 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 403 "./parser.y" /* yacc.c:1646  */
+#line 401 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = (yyvsp[0].node);
       (yyval.node)->nodeType = NODE_PROCEDURESTMT;
 
       printf("Reduction: procedure_statement -> id \n");
     }
-#line 1834 "y.tab.c" /* yacc.c:1646  */
+#line 1832 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 410 "./parser.y" /* yacc.c:1646  */
+#line 408 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = (yyvsp[-3].node);
       (yyval.node)->nodeType = NODE_PROCEDURESTMT;
@@ -1842,231 +1840,231 @@ yyreduce:
 
       printf("Reduction: procedure_statement -> id LPAREN expression_list RPAREN \n");
     }
-#line 1846 "y.tab.c" /* yacc.c:1646  */
+#line 1844 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 422 "./parser.y" /* yacc.c:1646  */
+#line 420 "./parser.y" /* yacc.c:1646  */
     {
       printf("Reduction (expression_list -> expression)\n");
       (yyval.node) = newNode(NODE_EXPRLIST, line_no);
       addChild((yyval.node), (yyvsp[0].node));
     }
-#line 1856 "y.tab.c" /* yacc.c:1646  */
+#line 1854 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 428 "./parser.y" /* yacc.c:1646  */
+#line 426 "./parser.y" /* yacc.c:1646  */
     {
       printf("Reduction (expression_list -> expression_list COMMA expression)\n");
       (yyval.node) = (yyvsp[-2].node);
       addChild((yyval.node), (yyvsp[0].node));
     }
-#line 1866 "y.tab.c" /* yacc.c:1646  */
+#line 1864 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 438 "./parser.y" /* yacc.c:1646  */
+#line 436 "./parser.y" /* yacc.c:1646  */
     {
       printf("Reduction (expression -> simple_expression)\n");
       (yyval.node) = (yyvsp[0].node);
     }
-#line 1875 "y.tab.c" /* yacc.c:1646  */
+#line 1873 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 443 "./parser.y" /* yacc.c:1646  */
+#line 441 "./parser.y" /* yacc.c:1646  */
     {
       printf("Reduction (expression -> simple_expression relop simple_expression)\n");
       (yyval.node) = (yyvsp[-1].node);
       addChild((yyval.node), (yyvsp[-2].node));
       addChild((yyval.node), (yyvsp[0].node));
     }
-#line 1886 "y.tab.c" /* yacc.c:1646  */
+#line 1884 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 454 "./parser.y" /* yacc.c:1646  */
+#line 452 "./parser.y" /* yacc.c:1646  */
     {
       printf("Reduction (simple_expression -> term)\n");
       (yyval.node) = (yyvsp[0].node);
     }
-#line 1895 "y.tab.c" /* yacc.c:1646  */
+#line 1893 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 459 "./parser.y" /* yacc.c:1646  */
+#line 457 "./parser.y" /* yacc.c:1646  */
     {
       printf("Reduction (simple_expression -> simple_expression addop term)\n");
       (yyval.node) = (yyvsp[-1].node);
       addChild((yyval.node), (yyvsp[-2].node));
       addChild((yyval.node), (yyvsp[0].node));
     }
-#line 1906 "y.tab.c" /* yacc.c:1646  */
+#line 1904 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 470 "./parser.y" /* yacc.c:1646  */
+#line 468 "./parser.y" /* yacc.c:1646  */
     {
       printf("Reduction (term -> factor)\n");
       (yyval.node) = (yyvsp[0].node);
     }
-#line 1915 "y.tab.c" /* yacc.c:1646  */
+#line 1913 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 45:
-#line 475 "./parser.y" /* yacc.c:1646  */
+#line 473 "./parser.y" /* yacc.c:1646  */
     {
       printf("Reduction (term -> term mulop factor)\n");
       (yyval.node) = (yyvsp[-1].node);
       addChild((yyval.node), (yyvsp[-2].node));
       addChild((yyval.node), (yyvsp[0].node));
     }
-#line 1926 "y.tab.c" /* yacc.c:1646  */
+#line 1924 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 46:
-#line 486 "./parser.y" /* yacc.c:1646  */
+#line 484 "./parser.y" /* yacc.c:1646  */
     {
       printf("Reduction (factor -> id tail)\n");
       (yyval.node) = (yyvsp[-1].node);
       (yyvsp[-1].node)->nodeType = NODE_VARIABLE;
       addChild((yyval.node), (yyvsp[0].node));
     }
-#line 1937 "y.tab.c" /* yacc.c:1646  */
+#line 1935 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 493 "./parser.y" /* yacc.c:1646  */
+#line 491 "./parser.y" /* yacc.c:1646  */
     {
       printf("Reduction (factor -> id LPAREN expression_list RPAREN)\n");
       (yyval.node) = (yyvsp[-3].node);
       (yyval.node)->nodeType = NODE_CALLFUNC;
       addChild((yyval.node), (yyvsp[-1].node));
     }
-#line 1948 "y.tab.c" /* yacc.c:1646  */
+#line 1946 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 48:
-#line 500 "./parser.y" /* yacc.c:1646  */
+#line 498 "./parser.y" /* yacc.c:1646  */
     {
       printf("Reduction (factor -> num)\n");
       (yyval.node) = (yyvsp[0].node);
     }
-#line 1957 "y.tab.c" /* yacc.c:1646  */
+#line 1955 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 49:
-#line 505 "./parser.y" /* yacc.c:1646  */
+#line 503 "./parser.y" /* yacc.c:1646  */
     {
       printf("Reduction (factor -> LPAREN expression RPAREN)\n");
       (yyval.node) = (yyvsp[-1].node);
     }
-#line 1966 "y.tab.c" /* yacc.c:1646  */
+#line 1964 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 50:
-#line 510 "./parser.y" /* yacc.c:1646  */
+#line 508 "./parser.y" /* yacc.c:1646  */
     {
       printf("Reduction (factor -> NOT factor)\n");
       (yyval.node) = newNode(NOT, line_no);
       addChild((yyval.node), (yyvsp[0].node));
     }
-#line 1976 "y.tab.c" /* yacc.c:1646  */
+#line 1974 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 51:
-#line 520 "./parser.y" /* yacc.c:1646  */
+#line 518 "./parser.y" /* yacc.c:1646  */
     {
       printf("Reduction (addop -> PLUS)\n");
       (yyval.node) = newOpNode(OP_ADD, line_no);
     }
-#line 1985 "y.tab.c" /* yacc.c:1646  */
+#line 1983 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 52:
-#line 525 "./parser.y" /* yacc.c:1646  */
+#line 523 "./parser.y" /* yacc.c:1646  */
     {
       printf("Reduction (addop -> MINUS)\n");
       (yyval.node) = newOpNode(OP_SUB, line_no);
     }
-#line 1994 "y.tab.c" /* yacc.c:1646  */
+#line 1992 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 53:
-#line 534 "./parser.y" /* yacc.c:1646  */
+#line 532 "./parser.y" /* yacc.c:1646  */
     {
       printf("Reduction (mulop -> STAR)\n");
       (yyval.node) = newOpNode(OP_MUL, line_no);
     }
-#line 2003 "y.tab.c" /* yacc.c:1646  */
+#line 2001 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 54:
-#line 539 "./parser.y" /* yacc.c:1646  */
+#line 537 "./parser.y" /* yacc.c:1646  */
     {
       printf("Reduction (mulop -> SLASH)\n");
       (yyval.node) = newOpNode(OP_DIV, line_no);
     }
-#line 2012 "y.tab.c" /* yacc.c:1646  */
+#line 2010 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 55:
-#line 548 "./parser.y" /* yacc.c:1646  */
+#line 546 "./parser.y" /* yacc.c:1646  */
     {
       printf("Reduction (relop -> LT)\n");
       (yyval.node) = newOpNode(OP_LT, line_no);
     }
-#line 2021 "y.tab.c" /* yacc.c:1646  */
+#line 2019 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 553 "./parser.y" /* yacc.c:1646  */
+#line 551 "./parser.y" /* yacc.c:1646  */
     {
       printf("Reduction (relop -> GT)\n");
       (yyval.node) = newOpNode(OP_GT, line_no);
     }
-#line 2030 "y.tab.c" /* yacc.c:1646  */
+#line 2028 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 558 "./parser.y" /* yacc.c:1646  */
+#line 556 "./parser.y" /* yacc.c:1646  */
     {
       printf("Reduction (relop -> EQUAL)\n");
       (yyval.node) = newOpNode(OP_EQ, line_no);
     }
-#line 2039 "y.tab.c" /* yacc.c:1646  */
+#line 2037 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 58:
-#line 563 "./parser.y" /* yacc.c:1646  */
+#line 561 "./parser.y" /* yacc.c:1646  */
     {
       printf("Reduction (relop -> LE)\n");
       (yyval.node) = newOpNode(OP_LE, line_no);
     }
-#line 2048 "y.tab.c" /* yacc.c:1646  */
+#line 2046 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 568 "./parser.y" /* yacc.c:1646  */
+#line 566 "./parser.y" /* yacc.c:1646  */
     {
       printf("Reduction (relop -> GE)\n");
       (yyval.node) = newOpNode(OP_GE, line_no);
     }
-#line 2057 "y.tab.c" /* yacc.c:1646  */
+#line 2055 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 573 "./parser.y" /* yacc.c:1646  */
+#line 571 "./parser.y" /* yacc.c:1646  */
     {
       printf("Reduction (relop -> NOTEQUAL)\n");
       (yyval.node) = newOpNode(OP_NE, line_no);
     }
-#line 2066 "y.tab.c" /* yacc.c:1646  */
+#line 2064 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 61:
-#line 582 "./parser.y" /* yacc.c:1646  */
+#line 580 "./parser.y" /* yacc.c:1646  */
     {
       printf("Reduction (id -> IDENTIFIER)\n");
       (yyval.node) = newNode(IDENTIFIER, line_no);
@@ -2074,22 +2072,22 @@ yyreduce:
       strcpy((yyval.node)->string, (yyvsp[0].string));
       printf("IDENTIFIER: %s\n",(yyval.node)->string);
     }
-#line 2078 "y.tab.c" /* yacc.c:1646  */
+#line 2076 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 62:
-#line 594 "./parser.y" /* yacc.c:1646  */
+#line 592 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = newUOpNode(OP_SUB, line_no);
       addChild((yyval.node), (yyvsp[0].node));
 
       printf("Reduction: num -> MINUS num \n");
     }
-#line 2089 "y.tab.c" /* yacc.c:1646  */
+#line 2087 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 63:
-#line 601 "./parser.y" /* yacc.c:1646  */
+#line 599 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = newNode(REALNUMBER, line_no);
       (yyval.node)->valueValid = VALUE_R_VALID;
@@ -2098,11 +2096,11 @@ yyreduce:
 
       printf("Reduction: num -> REALNUMBER \n");
     }
-#line 2102 "y.tab.c" /* yacc.c:1646  */
+#line 2100 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 64:
-#line 610 "./parser.y" /* yacc.c:1646  */
+#line 608 "./parser.y" /* yacc.c:1646  */
     {
       (yyval.node) = newNode(DIGSEQ, line_no);
       (yyval.node)->valueValid = VALUE_I_VALID;
@@ -2111,11 +2109,11 @@ yyreduce:
 
       printf("Reduction: num -> DIGSEQ \n");
     }
-#line 2115 "y.tab.c" /* yacc.c:1646  */
+#line 2113 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 2119 "y.tab.c" /* yacc.c:1646  */
+#line 2117 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2343,7 +2341,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 620 "./parser.y" /* yacc.c:1906  */
+#line 618 "./parser.y" /* yacc.c:1906  */
 
 
 /* Construct a new node for normal operator */
