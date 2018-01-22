@@ -88,6 +88,8 @@ NQUOTE [^'"\n]
 
 {R}{E}{A}{L} { printf("Shift: REAL \n"); yylval.node = newTokenNode(REAL, line_no); return(REAL); }
 
+{W}{R}{I}{T}{E}{L}{N} { printf("Shift: WRITELN \n"); return(WRITELN); }
+
 [a-zA-Z][a-zA-Z0-9_]* { printf("Shift: IDENTIFIER \n"); yylval.string = yytext; return(IDENTIFIER); }
 
 ":=" { printf("Shift: ASSIGNMENT \n"); return(ASSIGNMENT); }

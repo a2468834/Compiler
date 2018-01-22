@@ -195,16 +195,15 @@ void GenMethod(struct nodeType* parent)
   for(int i=0; i<parent->child_num; i++)
   {
     struct nodeType *FUNCTION_node = nthChild(i+1, parent);
-    char *method_info = (char*)malloc(250*sizeof(char));
 
-    method_info = GenMethodStart(FUNCTION_node);
-    //printf("%s\n", method_info);
+    GenMethodStart(FUNCTION_node);
+    
     //GenExpr();
     GenMethodEnd(FUNCTION_node);
   }
 }
 
-char* GenMethodStart(struct nodeType *parent)
+void GenMethodStart(struct nodeType *parent)
 {
   struct nodeType *method_name_node = nthChild(1, parent);
   struct nodeType *arguments_node = nthChild(2, parent);
@@ -275,12 +274,6 @@ char* GenMethodStart(struct nodeType *parent)
   fprintf(output_file, ".method public static %s(%s)%s\n", method_name, parameter_type_list, return_type);
   fprintf(output_file, "\t.limit locals 100\n");
   fprintf(output_file, "\t.limit stack 100\n");
-
-  char *method_info = (char*)malloc( (strlen(parameter_type_list)+strlen(return_type)+3)*sizeof(char) );
-  strcat(method_info, parameter_type_list);
-  strcat(method_info, "/");
-  strcat(method_info, return_type);
-  return method_info;
 }
 
 void GenMethodEnd(struct nodeType *parent)

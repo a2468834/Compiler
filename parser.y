@@ -49,7 +49,7 @@ void yyerror (char const *s)
 /* Declare the types for each terminal */
 %token <node> ARRAY ASSIGNMENT CASE CHARACTER COLON COMMA CONST
 %token <node> DIV DO DOT DOTDOT ELSE END EQUAL FUNCTION
-%token <node> GE GT IF INTEGER LBRAC LE LPAREN LT NOT
+%token <node> GE GT IF INTEGER LBRAC LE LPAREN LT NOT WRITELN
 %token <node> NOTEQUAL OF PBEGIN PROCEDURE PROGRAM RBRAC
 %token <node> REAL RPAREN SEMICOLON THEN VAR WHILE PLUS MINUS STAR SLASH
 %token <number> DIGSEQ
@@ -358,6 +358,10 @@ statement :
       addChild($$, $4);
 
       printf("Reduction: statement -> WHILE expression DO statement \n");
+    }
+  | WRITELN LPAREN num RPAREN SEMICOLON
+    {
+
     }
 	|
     {

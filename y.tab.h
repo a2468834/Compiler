@@ -69,26 +69,27 @@ extern int yydebug;
     LPAREN = 279,
     LT = 280,
     NOT = 281,
-    NOTEQUAL = 282,
-    OF = 283,
-    PBEGIN = 284,
-    PROCEDURE = 285,
-    PROGRAM = 286,
-    RBRAC = 287,
-    REAL = 288,
-    RPAREN = 289,
-    SEMICOLON = 290,
-    THEN = 291,
-    VAR = 292,
-    WHILE = 293,
-    PLUS = 294,
-    MINUS = 295,
-    STAR = 296,
-    SLASH = 297,
-    DIGSEQ = 298,
-    IDENTIFIER = 299,
-    REALNUMBER = 300,
-    STRING = 301
+    WRITELN = 282,
+    NOTEQUAL = 283,
+    OF = 284,
+    PBEGIN = 285,
+    PROCEDURE = 286,
+    PROGRAM = 287,
+    RBRAC = 288,
+    REAL = 289,
+    RPAREN = 290,
+    SEMICOLON = 291,
+    THEN = 292,
+    VAR = 293,
+    WHILE = 294,
+    PLUS = 295,
+    MINUS = 296,
+    STAR = 297,
+    SLASH = 298,
+    DIGSEQ = 299,
+    IDENTIFIER = 300,
+    REALNUMBER = 301,
+    STRING = 302
   };
 #endif
 /* Tokens.  */
@@ -116,26 +117,27 @@ extern int yydebug;
 #define LPAREN 279
 #define LT 280
 #define NOT 281
-#define NOTEQUAL 282
-#define OF 283
-#define PBEGIN 284
-#define PROCEDURE 285
-#define PROGRAM 286
-#define RBRAC 287
-#define REAL 288
-#define RPAREN 289
-#define SEMICOLON 290
-#define THEN 291
-#define VAR 292
-#define WHILE 293
-#define PLUS 294
-#define MINUS 295
-#define STAR 296
-#define SLASH 297
-#define DIGSEQ 298
-#define IDENTIFIER 299
-#define REALNUMBER 300
-#define STRING 301
+#define WRITELN 282
+#define NOTEQUAL 283
+#define OF 284
+#define PBEGIN 285
+#define PROCEDURE 286
+#define PROGRAM 287
+#define RBRAC 288
+#define REAL 289
+#define RPAREN 290
+#define SEMICOLON 291
+#define THEN 292
+#define VAR 293
+#define WHILE 294
+#define PLUS 295
+#define MINUS 296
+#define STAR 297
+#define SLASH 298
+#define DIGSEQ 299
+#define IDENTIFIER 300
+#define REALNUMBER 301
+#define STRING 302
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -150,7 +152,7 @@ union YYSTYPE
   char *string;
   char character;
 
-#line 154 "y.tab.h" /* yacc.c:1909  */
+#line 156 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

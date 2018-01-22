@@ -4,7 +4,7 @@ VAR c: REAL;
 VAR d, e: array [ 3 .. 5 ] of array [ 1 .. 10 ] of REAL;
 VAR ff: array [ 1 .. 20 ] of INTEGER;
 
-FUNCTION ss (bb: array [ 1 .. 10 ] of array [ 1 .. 10 ] of REAL; jj:INTEGER): INTEGER;
+FUNCTION ss (bb, hh: array [ 1 .. 10 ] of REAL; jj, pp:INTEGER): INTEGER;
 VAR aa: REAL;
 VAR kk: REAL;
 BEGIN
@@ -21,6 +21,7 @@ END;
 
 BEGIN
 	a := 3;
+	writeln(3);
 	b := 4;
 	b := ss;
 END.
