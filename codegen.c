@@ -219,7 +219,7 @@ char* GenMethodStart(struct nodeType *parent)
 
   if(return_type_node->nodeType == INTEGER)return_type[0] = 'I';
   else if(return_type_node->nodeType == REAL)return_type[0] = 'F';
-  // actually, a method's type of return value should be either "I" or "F"  
+  // actually, a method's type of return value should be either "I" or "F"
   else return_type[0] = 'V';
 
   // let's start to get the list of all parameters' type

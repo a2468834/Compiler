@@ -99,7 +99,7 @@ struct nodeType
 
   /* Items for Function */
   int isFunction;
-  int paramNo;
+  int paramNum;
 };
 
 struct nodeType* newNode(int type, int line_no);

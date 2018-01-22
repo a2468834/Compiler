@@ -21,14 +21,15 @@ enum StdType
 
 struct SymTableEntry
 {
-  char name[100];
+  char name[200];
   enum StdType type;
   int arraydepth;
   int idxstart;
   int idxend;
   int isFunction;
+  char owned_by[200];// a function name which owns this variable
   int scope;
-  int paramNo;
+  int paramNum;
   int line_no;
 };
 
@@ -46,7 +47,7 @@ extern struct SymTable SymbolTable;
 
 struct SymTableEntry* findSymbol(char *s, int itsscope);
 struct SymTableEntry* findSymbol_noscope(char *s);
-void setParamNo(char *s, int paramNo);
+void setParamNum(char *s, int paramNum);
 
 struct SymTableEntry* addVariable(
   char *s,
