@@ -359,10 +359,6 @@ statement :
 
       printf("Reduction: statement -> WHILE expression DO statement \n");
     }
-  | WRITELN LPAREN num RPAREN SEMICOLON
-    {
-
-    }
 	|
     {
       $$ = newNode(NODE_STMT, line_no);

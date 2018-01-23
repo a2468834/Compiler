@@ -1,7 +1,8 @@
 PROGRAM aa(input, output, error);
 VAR a, b: INTEGER;
 VAR c: REAL;
-VAR d, e: array [ 3 .. 5 ] of array [ 1 .. 10 ] of REAL;
+VAR d: array [ 3 .. 5 ] of REAL;
+VAR e: array [ 3 .. 5 ] of array [ 1 .. 10 ] of REAL;
 VAR ff: array [ 1 .. 20 ] of INTEGER;
 
 FUNCTION ss (bb, hh: array [ 1 .. 10 ] of REAL; jj, pp:INTEGER): INTEGER;
@@ -21,9 +22,19 @@ END;
 
 BEGIN
 	a := 3;
-	writeln(3);
+	a := 4;
+
+	a := 5;
+
+	a := 6;
+
+
+	b := 8;
+	a := 7;
+	//writeln(3);
 	b := 4;
-	b := ss;
+	
+	d[3] := 9.99;
 END.
 
 

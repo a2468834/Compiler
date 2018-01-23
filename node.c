@@ -155,12 +155,12 @@ void printTree(struct nodeType *node, int ident)
         break;
 
       case NODE_COMPOUND:
-        printf("%s/compound_statemnet\n", blank);
+        printf("%s/compound_statement\n", blank);
         ident += 8;
         break;
 
       case NODE_STMTLIST:
-        printf("%s/statemnet_list\n", blank);
+        printf("%s/statement_list\n", blank);
         ident += 8;
         break;
 

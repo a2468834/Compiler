@@ -27,7 +27,7 @@ void GenMethodEnd(struct nodeType *parent);
 
 char* GetArrayDimAndType(struct nodeType *array_node);
 
-void GenMainMethod();
+void GenMainMethod(struct nodeType *main_method);
 void GenMainMethodStart();
 void GenMainMethodEnd();
 

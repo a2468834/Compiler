@@ -2,19 +2,21 @@
 
 void CodeGen(struct nodeType *ASTROOT)
 {
-  struct nodeType *declarations_node = nthChild(3, ASTROOT);
+  struct nodeType *global_declarations_node = nthChild(3, ASTROOT);
   struct nodeType *subprogram_declarations_node = nthChild(4, ASTROOT);
+  struct nodeType *main_method_statement_list_node = nthChild(5, ASTROOT);
+
 
   InitFile();
 
-  GenGlobalVar(declarations_node);
+  GenGlobalVar(global_declarations_node;
 
   GenStdInit();
-  GenGlobalInit(declarations_node);
+  GenGlobalInit(global_declarations_node);
 
   GenMethod(subprogram_declarations_node);
 
-  GenMainMethod();
+  GenMainMethod(main_method_statement_list_node);
 
 }
 
@@ -297,10 +299,23 @@ void GenMethodEnd(struct nodeType *parent)
   }
 }
 
-void GenMainMethod()
+void GenMainMethod(struct nodeType *main_method)
 {
   GenMainMethodStart();
-  //GenExpr
+  
+  // the last one child of main_method is 'NODE_STMT' which is "END."
+  for(int i=0; i<main_method->child_num-1; i++)
+  {
+    struct nodeType *assignment_node = nthChild(i+1, main_method);
+
+    Gen
+  }
+
+
+
+
+
+
   GenMainMethodEnd();
 }
 
