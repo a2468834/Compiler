@@ -35,4 +35,6 @@ void GenLoadArray(struct nodeType *array);
 void GenExpr(struct nodeType *expression);
 void GenSaveToVar(struct nodeType *variable);
 
+void GenWriteLine(struct nodeType *writeln);
+
 #endif

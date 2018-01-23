@@ -306,24 +306,41 @@ void GenMainMethod(struct nodeType *main_method)
   // the last one child of main_method is 'NODE_STMT' which is "END."
   for(int i=0; i<main_method->child_num-1; i++)
   {
-    struct nodeType *assignment_node = nthChild(i+1, main_method);
-    // 'variable' ASSIGNMENT 'expression'
-    struct nodeType *variable_node = nthChild(1, assignment_node);
-    struct nodeType *expression_node = nthChild(1, assignment_node);
-    struct SymTableEntry* variable_entry = findSymbol(variable_node->string, 1);
+    struct nodeType *child = nthChild(i+1, main_method);
 
-    // array variable must prepare their accessing index first
-    if(variable_entry->arraydepth>0)
+    switch (child->nodeType)
     {
-      GenLoadArray(variable_node);
-      GenExpr(expression_node);
-      GenSaveToVar(variable_node);
-    }
+      case ASSIGNMENT:
+      {
+        // 'variable' ASSIGNMENT 'expression'
+        struct nodeType *variable_node = nthChild(1, child);
+        struct nodeType *expression_node = nthChild(1, child);
+        struct SymTableEntry* variable_entry = findSymbol(variable_node->string, 1);
 
-    else if( (variable_entry->type==TypeInt) || (variable_entry->type==TypeReal) )
-    {
-      GenExpr(expression_node);
-      GenSaveToVar(variable_node);
+        // array variable must prepare their accessing index first
+        if(variable_entry->arraydepth>0)
+        {
+          GenLoadArray(variable_node);
+          GenExpr(expression_node);
+          GenSaveToVar(variable_node);
+        }
+
+        else if( (variable_entry->type==TypeInt) || (variable_entry->type==TypeReal) )
+        {
+          GenExpr(expression_node);
+          GenSaveToVar(variable_node);
+        }
+      }
+
+      case WRITELN:
+      {
+        GenWriteLine(child);
+      }
+
+      default:
+      {
+        // empty method
+      }
     }
   }
 
@@ -346,7 +363,7 @@ void GenMainMethodEnd()
 
 void GenLoadArray(struct nodeType *array)
 {
-  
+
 }
 
 void GenExpr(struct nodeType *expression)
@@ -357,4 +374,39 @@ void GenExpr(struct nodeType *expression)
 void GenSaveToVar(struct nodeType *varable)
 {
 
+}
+
+void GenWriteLine(struct nodeType *writeln)
+{
+  struct nodeType *content = nthChild(1, writeln);
+
+  if(content->nodeType == DIGSEQ)
+  {
+    fprintf(output_file, "\tgetstatic java/lang/System/out Ljava/io/PrintStream;\n");
+    fprintf(output_file, "\tldc %d\n", content->iValue);
+    fprintf(output_file, "\tinvokestatic java/lang/String/valueOf(I)Ljava/lang/String;\n");
+    fprintf(output_file, "\tinvokevirtual java/io/PrintStream/println(Ljava/lang/String;)V\n");
+  }
+
+  else if(content->nodeType == REALNUMBER)
+  {
+    fprintf(output_file, "\tgetstatic java/lang/System/out Ljava/io/PrintStream;\n");
+    fprintf(output_file, "\tldc %f\n", content->rValue);
+    fprintf(output_file, "\tinvokestatic java/lang/String/valueOf(F)Ljava/lang/String;\n");
+    fprintf(output_file, "\tinvokevirtual java/io/PrintStream/println(Ljava/lang/String;)V\n");
+  }
+
+  else if(content->nodeType == IDENTIFIER)
+  {
+    struct SymTableEntry* variable_entry = findSymbol(content->string, 1);
+    char variable_type[1] = {0};
+
+    if(variable_entry->type == TypeInt)variable_type[0]='I';
+    else if(variable_entry->type == TypeReal)variable_type[0]='F';
+
+    fprintf(output_file, "\tgetstatic java/lang/System/out Ljava/io/PrintStream;\n");
+    fprintf(output_file, "\tgetstatic foo/%s %s\n", content->string, variable_type);
+    fprintf(output_file, "\tinvokestatic java/lang/String/valueOf(%s)Ljava/lang/String;\n", variable_type);
+    fprintf(output_file, "\tinvokevirtual java/io/PrintStream/println(Ljava/lang/String;)V\n");
+  }
 }

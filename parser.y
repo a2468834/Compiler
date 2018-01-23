@@ -692,7 +692,6 @@ int main(int argc, char** argv)
   printf("*************************************\n"
          "*          No syntax error!         *\n"
          "*************************************\n");
-  printTree(ASTROOT, 0);
 
   // START: symtab.h and symtab.c
   SymbolTable.size = 0;
@@ -700,11 +699,13 @@ int main(int argc, char** argv)
   printf("*************************************\n"
          "*         No semantic error!        *\n"
          "*************************************\n");
+  
+  printTree(ASTROOT, 0);
   printTable();
 
   //START: codegen.h and codegen.c
   // get started to generate input file's java bytecode
-  //CodeGen(ASTROOT);
+  CodeGen(ASTROOT);
 
   return 0;
 }
