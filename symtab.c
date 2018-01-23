@@ -40,19 +40,27 @@ struct SymTableEntry* findSymbol_noscope(char *s)
   return 0;
 }
 
-struct SymTableEntry* findSymbol_localVar(char *name, int itsscope, char* owner)
+struct SymTableEntry* findSymbol_localVar(char *name, int itsscope, char *owner)
 {
-  for(int i=0; i<SymbolTable.size; i++)
+  if(owner == NULL)
   {
-    struct SymTableEntry entry = SymbolTable.entries[i];
-    if(strcmp(entry.name, name) == 0
-       && itsscope == entry.scope
-       && strcmp(entry.owned_by, owner) == 0)
-    {
-      return &SymbolTable.entries[i];
-    }
+    return findSymbol(name, itsscope);
   }
-  return 0;
+
+  else
+  {
+    for(int i=0; i<SymbolTable.size; i++)
+    {
+      struct SymTableEntry entry = SymbolTable.entries[i];
+      if(strcmp(entry.name, name) == 0
+         && itsscope == entry.scope
+         && strcmp(entry.owned_by, owner) == 0)
+      {
+        return &SymbolTable.entries[i];
+      }
+    }
+    return 0;
+  }
 }
 
 void setParamNum(char *s, int paramNum)
@@ -108,13 +116,18 @@ int GetParamNum(struct nodeType *arguments_node)
   return parameter_number;
 }
 
+void AddArrayDim(char *name, int itsscope, char *owner, struct dimension index, int depth)
+{
+
+}
+
 struct SymTableEntry* addVariable(
   char *s,
   enum StdType type,
   int arraydepth,
   int idxstart,
   int idxend,
-  struct index_info index, 
+  /*struct dimension index, */
   int isFunction,
   int itsscope,
   int line_no)
@@ -136,10 +149,10 @@ struct SymTableEntry* addVariable(
       strcpy(SymbolTable.entries[index].name, s);
       SymbolTable.entries[index].type = type;
       SymbolTable.entries[index].arraydepth = arraydepth;
+
       SymbolTable.entries[index].idxstart = idxstart;
       SymbolTable.entries[index].idxend = idxend;
-
-      SymbolTable.entries[index].index[0] = index;
+      //SymbolTable.entries[index].index[0] = index;
       
       SymbolTable.entries[index].isFunction = isFunction;
       strcpy(SymbolTable.entries[index].owned_by, "\0"); // curfunc is NULL
@@ -174,8 +187,11 @@ struct SymTableEntry* addVariable(
       strcpy(SymbolTable.entries[index].name, s);
       SymbolTable.entries[index].type = type;
       SymbolTable.entries[index].arraydepth = arraydepth;
+
       SymbolTable.entries[index].idxstart = idxstart;
       SymbolTable.entries[index].idxend = idxend;
+      //SymbolTable.entries[index].index[0] = index;
+
       SymbolTable.entries[index].isFunction = isFunction;
       strcpy(SymbolTable.entries[index].owned_by, curfunc);
       SymbolTable.entries[index].scope = itsscope;
@@ -209,11 +225,11 @@ void semanticCheck(struct nodeType *node)
         exit(EXIT_FAILURE);
       }
 
-      node->idxstart = start->iValue;
-      node->idxend = end->iValue;
       semanticCheck(typeNode);
 
       node->arraydepth = typeNode->arraydepth + 1;
+      node->idxstart = start->iValue;
+      node->idxend = end->iValue;
 
       break;
     }
@@ -318,22 +334,39 @@ void semanticCheck(struct nodeType *node)
       }
 
       struct nodeType *idList = nthChild(1, node);
-      struct nodeType *idNode = idList->child;
-      //node->paramNum = 0;
 
-      do{
-        if (typeNode->nodeType == ARRAY)
+      for(int i=0; i<idList->child_num; i++)
+      {
+        struct nodeType *idListChild = nthChild(i+1, idList);
+        addVariable(idListChild->string, valueType, arraydepth, idxstart, idxend, 0, scope, node->line_no);
+        
+        // if this variable is an array, we need to add 'struct dimension' additionally
+        if(typeNode->nodeType == ARRAY)
         {
-          idNode->idxstart = idxstart;
-          idNode->idxend = idxend;
-          idNode->arraydepth = arraydepth;
+          // declare 'array_node' just because in order to prevent 
+          // 'typeNode' from getting dirty
+          struct nodeType *array_node = typeNode;
+          struct nodeType *deeper_array_node;
+          int depth = 1;
+          
+          do{
+            deeper_array_node = nthChild(3, array_node);
+
+            struct dimension new_index;
+            new_index.depth = depth;
+            new_index.start = nthChild(1, array_node)->iValue;
+            new_index.end = nthChild(2, array_node)->iValue;
+            
+            struct SymTableEntry *entry = findSymbol_localVar(idListChild->string, scope, curfunc);
+            entry->index[depth-1] = new_index;
+
+            depth++;
+            array_node = deeper_array_node;
+          }while(deeper_array_node->child_num != 0);
         }
-
-        addVariable(idNode->string, valueType, arraydepth, idxstart, idxend, 0, scope, node->line_no);
-        idNode = idNode->rsibling;
-      }while(idNode != idList->child);
-
-      if (typeNode->rsibling != NULL)
+      }
+      
+      if(typeNode->rsibling != NULL)
       {
         struct nodeType *sublist = nthChild(3, node);
         semanticCheck(sublist);
@@ -383,13 +416,18 @@ void semanticCheck(struct nodeType *node)
           }
         }
       }
-      else printf("Error(%d): unidentified type\n", node->line_no);
+      else
+      {
+        printf("Error(%d): unidentified type\n", node->line_no);
+        exit(EXIT_FAILURE);
+      }
 
       struct nodeType *id_list = nthChild(1, node);
 
       for(int i=0; i<id_list->child_num; i++)
       {
         struct nodeType *id_list_child = nthChild(i+1, id_list);
+
         if(findSymbol(id_list_child->string, 1) != 0)
         {
           printf("Error(%d): attempt to overload the variable '%s'\n", node->line_no, id_list_child->string);
@@ -399,6 +437,31 @@ void semanticCheck(struct nodeType *node)
         else
         {
           addVariable(id_list_child->string, valueType, arraydepth, idxstart, idxend, 0, scope, node->line_no);
+          
+          // if this variable is an array, we need to add 'struct dimension' additionally
+          if(typeNode->nodeType == ARRAY)
+          {
+            // declare 'array_node' just because in order to prevent 
+            // 'typeNode' from getting dirty
+            struct nodeType *array_node = typeNode;
+            struct nodeType *deeper_array_node;
+            int depth = 1;
+            
+            do{
+              deeper_array_node = nthChild(3, array_node);
+
+              struct dimension new_index;
+              new_index.depth = depth;
+              new_index.start = nthChild(1, array_node)->iValue;
+              new_index.end = nthChild(2, array_node)->iValue;
+              
+              struct SymTableEntry *entry = findSymbol_localVar(id_list_child->string, scope, curfunc);
+              entry->index[depth-1] = new_index;
+
+              depth++;
+              array_node = deeper_array_node;
+            }while(deeper_array_node->child_num != 0);
+          }
         }
       }
 

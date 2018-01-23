@@ -19,13 +19,12 @@ enum StdType
   TypeProc
 };
 
-struct index_info
+struct dimension
 {
-  int depth;
+  int depth; // how deep this dimension is at
   int start;
   int end;
-  struct index *deeper;
-}
+};
 
 struct SymTableEntry
 {
@@ -34,8 +33,8 @@ struct SymTableEntry
   int arraydepth;
   int idxstart;
   int idxend;
-  // maximum depth of array 100
-  struct index_info index[100];
+  // maximum dimension of array is 100
+  struct dimension index[100];
   int isFunction;
   char owned_by[200];// a function name which owns this variable
   int scope;

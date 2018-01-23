@@ -375,9 +375,9 @@ void GenLoadArray(struct nodeType *array)
   else if(variable_entry->type == TypeReal)strcat(array_tag, "F");
 
   fprintf(output_file, "getstatic foo/%s %s\n", variable_entry->name, array_tag);
+  
 
-  printf("%d\n", variable_entry->idxstart);
-  printf("%d\n", variable_entry->idxend);
+
 
 
 /*
