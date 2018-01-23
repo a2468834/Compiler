@@ -114,6 +114,7 @@ struct SymTableEntry* addVariable(
   int arraydepth,
   int idxstart,
   int idxend,
+  struct index_info index, 
   int isFunction,
   int itsscope,
   int line_no)
@@ -137,6 +138,9 @@ struct SymTableEntry* addVariable(
       SymbolTable.entries[index].arraydepth = arraydepth;
       SymbolTable.entries[index].idxstart = idxstart;
       SymbolTable.entries[index].idxend = idxend;
+
+      SymbolTable.entries[index].index[0] = index;
+      
       SymbolTable.entries[index].isFunction = isFunction;
       strcpy(SymbolTable.entries[index].owned_by, "\0"); // curfunc is NULL
       SymbolTable.entries[index].scope = itsscope;

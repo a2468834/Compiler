@@ -366,7 +366,32 @@ void GenMainMethodEnd()
 
 void GenLoadArray(struct nodeType *array)
 {
+  struct SymTableEntry* variable_entry = findSymbol(array->string, 1);
 
+  char *array_tag = (char*)malloc(100*sizeof(char));
+  for(int i=0; i<variable_entry->arraydepth; i++)
+    strcat(array_tag, "[");
+  if(variable_entry->type == TypeInt)strcat(array_tag, "I");
+  else if(variable_entry->type == TypeReal)strcat(array_tag, "F");
+
+  fprintf(output_file, "getstatic foo/%s %s\n", variable_entry->name, array_tag);
+
+  printf("%d\n", variable_entry->idxstart);
+  printf("%d\n", variable_entry->idxend);
+
+
+/*
+  getstatic foo/k [[F
+  ldc 25
+  ldc 23
+  isub
+  aaload
+  ldc 26
+  ldc 23
+  isub
+  ldc 3.14
+  fastore 
+*/
 }
 
 void GenExpr(struct nodeType *expression)

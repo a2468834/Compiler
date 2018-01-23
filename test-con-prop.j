@@ -36,10 +36,23 @@
 	return
 .end method
 
+.method public static ss([F[FII)I
+	.limit locals 100
+	.limit stack 100
+	ireturn
+.end method
+
+.method public static xx([[F)I
+	.limit locals 100
+	.limit stack 100
+	ireturn
+.end method
+
 .method public static main([Ljava/lang/String;)V
 	.limit locals 100
 	.limit stack 100
 	invokestatic foo/vinit()V
+getstatic foo/e [[F
 	getstatic java/lang/System/out Ljava/io/PrintStream;
 	getstatic foo/a I
 	invokestatic java/lang/String/valueOf(I)Ljava/lang/String;
