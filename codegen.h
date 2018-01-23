@@ -15,7 +15,8 @@ char* GetArrayDimAndType(struct nodeType *array_node);
 // evaluate integer expression which is represented by binary expression tree
 int EvaIntExpr(struct nodeType *node);
 double EvaRealExpr(struct nodeType *node);
-
+// simple expression is a expression that contains no variable just only numbers
+bool CheckSimpleExpr(struct nodeType *node);
 
 void CodeGen(struct nodeType *ASTROOT);
 
@@ -36,7 +37,6 @@ void GenMainMethodStart();
 void GenMainMethodEnd();
 
 void GenLoadArray(struct nodeType *array);
-void GenSaveToVar(struct nodeType *variable);
 
 void GenWriteLine(struct nodeType *writeln);
 

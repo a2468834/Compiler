@@ -59,7 +59,7 @@ char* GetArrayDimAndType(struct nodeType *array_node)
 
 int EvaIntExpr(struct nodeType *node)
 {
-  if(node->child_num == 0)return node->iValue;
+  if(node->nodeType == DIGSEQ)return node->iValue;
   if(node->nodeType == NODE_UOP)return node->iValue;
 
   struct nodeType *left_node = nthChild(1, node);
@@ -90,7 +90,7 @@ int EvaIntExpr(struct nodeType *node)
 
 double EvaRealExpr(struct nodeType *node)
 {
-  if(node->child_num == 0)return node->rValue;
+  if(node->nodeType == REALNUMBER)return node->rValue;
   if(node->nodeType == NODE_UOP)return node->rValue;
 
   struct nodeType *left_node = nthChild(1, node);
@@ -118,6 +118,112 @@ double EvaRealExpr(struct nodeType *node)
     }
   }
 }
+
+void EvaUnsimpIntExpr(struct nodeType *node)
+{
+  if(CheckSimpleExpr(node)==true)
+  {
+    int result = EvaIntExpr(node);
+    fprintf(output_file, "\tldc %d\n", result);
+  }
+
+  else
+  {
+    struct nodeType *left_node = nthChild(1, node);
+    struct nodeType *right_node = nthChild(2, node);
+
+    if(left_node->nodeType==NODE_VARIABLE)
+    {
+      fprintf(output_file, "\tgetstatic foo/%s I\n", left_node->string);
+      EvaUnsimpIntExpr(right_node);
+      switch(node->op)
+      {
+        case OP_ADD:
+        {
+          fprintf(output_file, "\tiadd\n");
+          break;
+        }
+
+        case OP_SUB:
+        {
+          fprintf(output_file, "\tisub\n");
+          break;
+        }
+
+        case OP_MUL:
+        {
+          fprintf(output_file, "\timul\n");
+          break;
+        }
+        case OP_DIV:
+        {
+          fprintf(output_file, "\tidiv\n");
+          break;
+        }
+      }
+    }
+
+    else
+    {
+      EvaUnsimpIntExpr(left_node);
+      EvaUnsimpIntExpr(right_node);
+
+      switch(node->op)
+      {
+        case OP_ADD:
+        {
+          fprintf(output_file, "\tiadd\n");
+          break;
+        }
+
+        case OP_SUB:
+        {
+          fprintf(output_file, "\tisub\n");
+          break;
+        }
+
+        case OP_MUL:
+        {
+          fprintf(output_file, "\timul\n");
+          break;
+        }
+        case OP_DIV:
+        {
+          fprintf(output_file, "\tidiv\n");
+          break;
+        }
+      }
+    }
+  }
+}
+
+double EvaUnsimpRealExpr(struct nodeType *node)
+{
+
+}
+
+bool CheckSimpleExpr(struct nodeType *node)
+{
+  bool simple = true;
+
+  if(node->child_num!=0)
+  {
+    for(int i=0; i<node->child_num; i++)
+      simple = simple & CheckSimpleExpr(nthChild(i+1, node));
+  }
+
+  for(int i=0; i<node->child_num; i++)
+  {
+    if(node->nodeType==DIGSEQ
+       || node->nodeType==REALNUMBER
+       || node->nodeType==NODE_OP
+       || node->nodeType==NODE_UOP)/* empty method*/;
+    else simple = false;
+  }
+
+  return simple;
+}
+
 
 void InitFile()
 {
@@ -387,10 +493,9 @@ void GenMainMethod(struct nodeType *main_method)
             GenLoadArray(variable_node);
 
             int result = EvaIntExpr(expression_node);
-            printf("%d\n", result);
             fprintf(output_file, "\tldc %d\n", result);
-            
-            GenSaveToVar(variable_node);
+
+            fprintf(output_file, "\tiastore\n");
           }
           else if(variable_entry->type==TypeReal)
           {
@@ -399,22 +504,38 @@ void GenMainMethod(struct nodeType *main_method)
             double result = EvaRealExpr(expression_node);
             fprintf(output_file, "\tldc %f\n", result);
 
-            GenSaveToVar(variable_node);
+            fprintf(output_file, "\tfastore\n");
           }
         }
 
         else if(variable_entry->type==TypeInt)
         {
-          int result = EvaIntExpr(expression_node);
-          fprintf(output_file, "\tldc %d\n", result);
-          GenSaveToVar(variable_node);
+          if(CheckSimpleExpr(expression_node)==true)
+          {
+            int result = EvaIntExpr(expression_node);
+            fprintf(output_file, "\tldc %d\n", result);
+            fprintf(output_file, "\tputstatic foo/%s I\n", variable_node->string);
+          }
+          else
+          {
+            EvaUnsimpIntExpr(expression_node);
+            fprintf(output_file, "\tputstatic foo/%s I\n", variable_node->string);
+          }
         }
 
         else if(variable_entry->type==TypeReal)
         {
-          double result = EvaRealExpr(expression_node);
-          fprintf(output_file, "\tldc %f\n", result);
-          GenSaveToVar(variable_node);
+          if(CheckSimpleExpr(expression_node)==true)
+          {
+            double result = EvaRealExpr(expression_node);
+            fprintf(output_file, "\tldc %f\n", result);
+            fprintf(output_file, "\tputstatic foo/%s F\n", variable_node->string);
+          }
+          else
+          {
+            EvaUnsimpRealExpr(expression_node);
+            fprintf(output_file, "\tputstatic foo/%s I\n", variable_node->string);
+          }
         }
 
         break;
@@ -485,8 +606,6 @@ void GenLoadArray(struct nodeType *array)
 
 void GenSaveToVar(struct nodeType *variable)
 {
-  if()
-
 }
 
 void GenWriteLine(struct nodeType *writeln)
