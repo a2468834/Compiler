@@ -64,7 +64,9 @@ void printTree(struct nodeType *node, int ident)
     switch(node->nodeType)
     {
       case NODE_UOP:
-        printf("%sUnary\n", blank);
+        if(node->valueType == TypeInt)printf("%sUnary:%d\n", blank, node->iValue);
+        else printf("%sUnary:%f\n", blank, node->rValue);
+        ident += 8;
         break;
 
       case NODE_OP:

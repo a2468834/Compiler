@@ -594,7 +594,7 @@ void semanticCheck(struct nodeType *node)
       // node->valueType is TypeInt means that it's a integer
       if (node->valueType == TypeInt)node->iValue = child->iValue*(-1);
       else node->rValue = child->rValue*(-1);
-      
+            
       break;
     }
 

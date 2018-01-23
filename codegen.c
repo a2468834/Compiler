@@ -57,14 +57,66 @@ char* GetArrayDimAndType(struct nodeType *array_node)
   }
 }
 
-int EvaIntExpr()
+int EvaIntExpr(struct nodeType *node)
 {
+  if(node->child_num == 0)return node->iValue;
+  if(node->nodeType == NODE_UOP)return node->iValue;
 
+  struct nodeType *left_node = nthChild(1, node);
+  struct nodeType *right_node = nthChild(2, node);
+
+  switch(node->op)
+  {
+    case OP_ADD:
+    {
+      return EvaIntExpr(left_node) + EvaIntExpr(right_node);
+    }
+
+    case OP_SUB:
+    {
+      return EvaIntExpr(left_node) - EvaIntExpr(right_node);
+    }
+
+    case OP_MUL:
+    {
+      return EvaIntExpr(left_node) * EvaIntExpr(right_node);
+    }
+    case OP_DIV:
+    {
+      return EvaIntExpr(left_node) / EvaIntExpr(right_node);
+    }
+  }
 }
 
-double EvaRealExpr()
+double EvaRealExpr(struct nodeType *node)
 {
+  if(node->child_num == 0)return node->rValue;
+  if(node->nodeType == NODE_UOP)return node->rValue;
 
+  struct nodeType *left_node = nthChild(1, node);
+  struct nodeType *right_node = nthChild(2, node);
+
+  switch(node->op)
+  {
+    case OP_ADD:
+    {
+      return EvaIntExpr(left_node) + EvaIntExpr(right_node);
+    }
+
+    case OP_SUB:
+    {
+      return EvaIntExpr(left_node) - EvaIntExpr(right_node);
+    }
+
+    case OP_MUL:
+    {
+      return EvaIntExpr(left_node) * EvaIntExpr(right_node);
+    }
+    case OP_DIV:
+    {
+      return EvaIntExpr(left_node) / EvaIntExpr(right_node);
+    }
+  }
 }
 
 void InitFile()
@@ -324,7 +376,7 @@ void GenMainMethod(struct nodeType *main_method)
       {
         // 'variable' ASSIGNMENT 'expression'
         struct nodeType *variable_node = nthChild(1, child);
-        struct nodeType *expression_node = nthChild(1, child);
+        struct nodeType *expression_node = nthChild(2, child);
         struct SymTableEntry* variable_entry = findSymbol(variable_node->string, 1);
 
         // array variable must prepare their accessing index first
@@ -335,6 +387,7 @@ void GenMainMethod(struct nodeType *main_method)
             GenLoadArray(variable_node);
 
             int result = EvaIntExpr(expression_node);
+            printf("%d\n", result);
             fprintf(output_file, "\tldc %d\n", result);
             
             GenSaveToVar(variable_node);
@@ -363,7 +416,7 @@ void GenMainMethod(struct nodeType *main_method)
           fprintf(output_file, "\tldc %f\n", result);
           GenSaveToVar(variable_node);
         }
-        
+
         break;
       }
 
@@ -430,8 +483,9 @@ void GenLoadArray(struct nodeType *array)
   fprintf(output_file, "\tisub\n");
 }
 
-void GenSaveToVar(struct nodeType *varable)
+void GenSaveToVar(struct nodeType *variable)
 {
+  if()
 
 }
 

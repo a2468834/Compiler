@@ -53,6 +53,8 @@
 	.limit locals 100
 	.limit stack 100
 	invokestatic foo/vinit()V
+	ldc 12
+	ldc 3.300000
 	getstatic foo/e [[[I
 	ldc 3
 	ldc 3
@@ -65,6 +67,7 @@
 	ldc 5
 	ldc 3
 	isub
+	ldc -21
 	getstatic java/lang/System/out Ljava/io/PrintStream;
 	getstatic foo/a I
 	invokestatic java/lang/String/valueOf(I)Ljava/lang/String;
