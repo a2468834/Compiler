@@ -2,7 +2,7 @@ PROGRAM aa(input, output, error);
 VAR a, b: INTEGER;
 VAR c: REAL;
 VAR d: array [ 3 .. 5 ] of REAL;
-VAR e: array [ 3 .. 5 ] of array [ 1 .. 10 ] of REAL;
+VAR e: array [ 3 .. 5 ] of array [ 1 .. 10 ] of array [ 3 .. 6 ] of INTEGER;
 VAR ff: array [ 1 .. 20 ] of INTEGER;
 
 FUNCTION ss (bb, hh: array [ 1 .. 10 ] of REAL; jj, pp:INTEGER): INTEGER;
@@ -23,7 +23,7 @@ END;
 BEGIN
 	a := 3+4+5;
 	c := 3.3;
-	e[4][2] := 2.2;
+	e[3][4][5] := 2*3/(2-1)+5*(4-1);
 	//a := 4;
 
 	//a := 5;

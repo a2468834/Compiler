@@ -12,6 +12,10 @@ extern int line_no; /* declared in scaner.l */
 extern FILE *output_file;/* declared in parser.y */
 
 char* GetArrayDimAndType(struct nodeType *array_node);
+// evaluate integer expression which is represented by binary expression tree
+int EvaIntExpr(struct nodeType *expression);
+double EvaRealExpr(struct nodeType *expression);
+
 
 void CodeGen(struct nodeType *ASTROOT);
 
@@ -32,7 +36,6 @@ void GenMainMethodStart();
 void GenMainMethodEnd();
 
 void GenLoadArray(struct nodeType *array);
-void GenExpr(struct nodeType *expression);
 void GenSaveToVar(struct nodeType *variable);
 
 void GenWriteLine(struct nodeType *writeln);

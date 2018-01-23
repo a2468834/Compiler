@@ -57,6 +57,16 @@ char* GetArrayDimAndType(struct nodeType *array_node)
   }
 }
 
+int EvaIntExpr()
+{
+
+}
+
+double EvaRealExpr()
+{
+
+}
+
 void InitFile()
 {
 	fprintf(output_file, ".class public foo\n");
@@ -320,16 +330,40 @@ void GenMainMethod(struct nodeType *main_method)
         // array variable must prepare their accessing index first
         if(variable_entry->arraydepth>0)
         {
-          GenLoadArray(variable_node);
-          GenExpr(expression_node);
+          if(variable_entry->type==TypeInt)
+          {
+            GenLoadArray(variable_node);
+
+            int result = EvaIntExpr(expression_node);
+            fprintf(output_file, "\tldc %d\n", result);
+            
+            GenSaveToVar(variable_node);
+          }
+          else if(variable_entry->type==TypeReal)
+          {
+            GenLoadArray(variable_node);
+
+            double result = EvaRealExpr(expression_node);
+            fprintf(output_file, "\tldc %f\n", result);
+
+            GenSaveToVar(variable_node);
+          }
+        }
+
+        else if(variable_entry->type==TypeInt)
+        {
+          int result = EvaIntExpr(expression_node);
+          fprintf(output_file, "\tldc %d\n", result);
           GenSaveToVar(variable_node);
         }
 
-        else if( (variable_entry->type==TypeInt) || (variable_entry->type==TypeReal) )
+        else if(variable_entry->type==TypeReal)
         {
-          GenExpr(expression_node);
+          double result = EvaRealExpr(expression_node);
+          fprintf(output_file, "\tldc %f\n", result);
           GenSaveToVar(variable_node);
         }
+        
         break;
       }
 
@@ -366,37 +400,34 @@ void GenMainMethodEnd()
 
 void GenLoadArray(struct nodeType *array)
 {
-  struct SymTableEntry* variable_entry = findSymbol(array->string, 1);
+  struct SymTableEntry* array_entry = findSymbol(array->string, 1);
+  int array_depth = array_entry->arraydepth;
 
   char *array_tag = (char*)malloc(100*sizeof(char));
-  for(int i=0; i<variable_entry->arraydepth; i++)
+  for(int i=0; i<array_depth; i++)
     strcat(array_tag, "[");
-  if(variable_entry->type == TypeInt)strcat(array_tag, "I");
-  else if(variable_entry->type == TypeReal)strcat(array_tag, "F");
+  if(array_entry->type == TypeInt)strcat(array_tag, "I");
+  else if(array_entry->type == TypeReal)strcat(array_tag, "F");
 
-  fprintf(output_file, "getstatic foo/%s %s\n", variable_entry->name, array_tag);
+  fprintf(output_file, "\tgetstatic foo/%s %s\n", array_entry->name, array_tag);
   
+  struct nodeType *tail_node = array->child;
+  struct nodeType *access_index_node;
+  for(int i=0; i<(array_depth-1); i++)
+  {
+    access_index_node = nthChild(2, tail_node);
+    
+    fprintf(output_file, "\tldc %d\n", access_index_node->iValue);
+    fprintf(output_file, "\tldc %d\n", array_entry->index[i].start);
+    fprintf(output_file, "\tisub\n");
+    fprintf(output_file, "\taaload\n");
+    tail_node = nthChild(1, tail_node);
+  }
 
-
-
-
-/*
-  getstatic foo/k [[F
-  ldc 25
-  ldc 23
-  isub
-  aaload
-  ldc 26
-  ldc 23
-  isub
-  ldc 3.14
-  fastore 
-*/
-}
-
-void GenExpr(struct nodeType *expression)
-{
-
+  access_index_node = nthChild(2, tail_node);
+  fprintf(output_file, "\tldc %d\n", access_index_node->iValue);
+  fprintf(output_file, "\tldc %d\n", array_entry->index[array_depth-1].start);
+  fprintf(output_file, "\tisub\n");
 }
 
 void GenSaveToVar(struct nodeType *varable)

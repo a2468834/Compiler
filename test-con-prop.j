@@ -2,7 +2,7 @@
 .super java/lang/Object
 
 .field public static ff [I
-.field public static e [[F
+.field public static e [[[I
 .field public static d [F
 .field public static c F
 .field public static a I
@@ -22,8 +22,9 @@
 	putstatic foo/ff [I
 	bipush 3
 	bipush 10
-	multianewarray [[F 2
-	putstatic foo/e [[F
+	bipush 4
+	multianewarray [[[I 3
+	putstatic foo/e [[[I
 	bipush 3
 	multianewarray [F 1
 	putstatic foo/d [F
@@ -52,7 +53,18 @@
 	.limit locals 100
 	.limit stack 100
 	invokestatic foo/vinit()V
-getstatic foo/e [[F
+	getstatic foo/e [[[I
+	ldc 3
+	ldc 3
+	isub
+	aaload
+	ldc 4
+	ldc 1
+	isub
+	aaload
+	ldc 5
+	ldc 3
+	isub
 	getstatic java/lang/System/out Ljava/io/PrintStream;
 	getstatic foo/a I
 	invokestatic java/lang/String/valueOf(I)Ljava/lang/String;
