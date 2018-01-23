@@ -330,16 +330,19 @@ void GenMainMethod(struct nodeType *main_method)
           GenExpr(expression_node);
           GenSaveToVar(variable_node);
         }
+        break;
       }
 
       case WRITELN:
       {
         GenWriteLine(child);
+        break;
       }
 
       default:
       {
         // empty method
+        break;
       }
     }
   }

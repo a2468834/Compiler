@@ -622,6 +622,7 @@ void semanticCheck(struct nodeType *node)
         struct nodeType *assignment_node = nthChild(i+1, node);
         semanticCheck(assignment_node);
       }
+      break;
     }
   }
 
