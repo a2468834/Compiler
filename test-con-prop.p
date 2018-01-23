@@ -21,7 +21,7 @@ BEGIN
 END;
 
 BEGIN
-	a := 3;
+	a := 3+4+5;
 	a := 4;
 
 	a := 5;
@@ -31,7 +31,8 @@ BEGIN
 
 	b := 8;
 	a := 7;
-	//writeln(3);
+	writeln(3);
+	writeln(a);
 	b := 4;
 	
 	d[3] := 9.99;

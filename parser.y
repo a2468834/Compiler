@@ -359,6 +359,16 @@ statement :
 
       printf("Reduction: statement -> WHILE expression DO statement \n");
     }
+  | WRITELN LPAREN num RPAREN
+    {
+      $$ = newNode(WRITELN, line_no);
+      addChild($$, $3);
+    }
+  | WRITELN LPAREN id RPAREN
+    {
+      $$ = newNode(WRITELN, line_no);
+      addChild($$, $3);
+    }
 	|
     {
       $$ = newNode(NODE_STMT, line_no);
@@ -694,7 +704,7 @@ int main(int argc, char** argv)
 
   //START: codegen.h and codegen.c
   // get started to generate input file's java bytecode
-  CodeGen(ASTROOT);
+  //CodeGen(ASTROOT);
 
   return 0;
 }

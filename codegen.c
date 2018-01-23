@@ -9,7 +9,7 @@ void CodeGen(struct nodeType *ASTROOT)
 
   InitFile();
 
-  GenGlobalVar(global_declarations_node;
+  GenGlobalVar(global_declarations_node);
 
   GenStdInit();
   GenGlobalInit(global_declarations_node);
@@ -307,14 +307,25 @@ void GenMainMethod(struct nodeType *main_method)
   for(int i=0; i<main_method->child_num-1; i++)
   {
     struct nodeType *assignment_node = nthChild(i+1, main_method);
+    // 'variable' ASSIGNMENT 'expression'
+    struct nodeType *variable_node = nthChild(1, assignment_node);
+    struct nodeType *expression_node = nthChild(1, assignment_node);
+    struct SymTableEntry* variable_entry = findSymbol(variable_node->string, 1);
 
-    Gen
+    // array variable must prepare their accessing index first
+    if(variable_entry->arraydepth>0)
+    {
+      GenLoadArray(variable_node);
+      GenExpr(expression_node);
+      GenSaveToVar(variable_node);
+    }
+
+    else if( (variable_entry->type==TypeInt) || (variable_entry->type==TypeReal) )
+    {
+      GenExpr(expression_node);
+      GenSaveToVar(variable_node);
+    }
   }
-
-
-
-
-
 
   GenMainMethodEnd();
 }
@@ -331,4 +342,19 @@ void GenMainMethodEnd()
 {
   fprintf(output_file, "\treturn\n");
   fprintf(output_file, ".end method\n\n");
+}
+
+void GenLoadArray(struct nodeType *array)
+{
+  
+}
+
+void GenExpr(struct nodeType *expression)
+{
+
+}
+
+void GenSaveToVar(struct nodeType *varable)
+{
+
 }

@@ -404,6 +404,11 @@ void printTree(struct nodeType *node, int ident)
         ident += 8;
         break;
 
+      case WRITELN:
+        printf("%s/WRITELN\n", blank);
+        ident += 8;
+        break;
+
       default:
         printf("%s/default:%d\n", blank, node->nodeType);
         break;

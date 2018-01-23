@@ -635,17 +635,17 @@ void semanticCheck(struct nodeType *node)
 
 void printTable()
 {
-	printf("+-----------------------------------+\n");
+  printf("+-----------------------------------+\n");
   printf("Table size: %d\n", SymbolTable.size);
   printf("+-----------------------------------+\n");
-	
+
   for (int i=0; i<SymbolTable.size; i++)
   {
     printf("Name: %s ", SymbolTable.entries[i].name);
     printf(", Scope: %d", SymbolTable.entries[i].scope);
     printf(", Type: ");
 
-		if(SymbolTable.entries[i].isFunction == 1)
+    if(SymbolTable.entries[i].isFunction == 1)
     {
       printf("FUNCTION (return ");
       if(SymbolTable.entries[i].type == TypeInt)printf("INTEGER)");
@@ -653,7 +653,7 @@ void printTable()
       printf(", ParamNo: %d", SymbolTable.entries[i].paramNum);
     }
 
-		else if(SymbolTable.entries[i].arraydepth > 0)
+    else if(SymbolTable.entries[i].arraydepth > 0)
     {
       printf("%dD-", SymbolTable.entries[i].arraydepth);
 
@@ -663,11 +663,11 @@ void printTable()
       printf("ARRAY");
     }
 
-		else if(SymbolTable.entries[i].type == TypeInt)printf("INTEGER");
-		else if(SymbolTable.entries[i].type == TypeReal)printf("REAL");
-		else if(SymbolTable.entries[i].type == TypeProc)printf("PROCEDURE");
+    else if(SymbolTable.entries[i].type == TypeInt)printf("INTEGER");
+    else if(SymbolTable.entries[i].type == TypeReal)printf("REAL");
+    else if(SymbolTable.entries[i].type == TypeProc)printf("PROCEDURE");
 
-		printf("\n");
+    printf("\n");
   }
   printf("+-----------------------------------+\n");
 }
