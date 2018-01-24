@@ -113,8 +113,10 @@
 	getstatic foo/c F
 	invokestatic java/lang/String/valueOf(F)Ljava/lang/String;
 	invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+	ldc 3
+	putstatic foo/b I
 	getstatic foo/e [[[I
-	ldc 4
+	ldc 1
 	ldc 3
 	isub
 	aaload
