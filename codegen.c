@@ -14,7 +14,7 @@ void CodeGen(struct nodeType *ASTROOT)
   GenStdInit();
   GenGlobalInit(global_declarations_node);
 
-  GenMethod(subprogram_declarations_node);
+  //GenMethod(subprogram_declarations_node);
 
   GenMainMethod(main_method_statement_list_node);
 
@@ -174,28 +174,73 @@ void EvaUnsimpIntExpr(struct nodeType *node)
 
 double EvaUnsimpRealExpr(struct nodeType *node)
 {
+  if(node->child_num != 0)
+  {
+    if(node->nodeType != NODE_VARIABLE && node->nodeType != NODE_UOP)
+    {
+      EvaUnsimpRealExpr(nthChild(1, node));
+      EvaUnsimpRealExpr(nthChild(2, node));
+    }
+  }
+  
+  if(node->nodeType==NODE_VARIABLE)
+  {
+    fprintf(output_file, "\tgetstatic foo/%s F\n", node->string);
+  }
+  else if(node->nodeType==REALNUMBER)
+  {
+    fprintf(output_file, "\tldc %f\n", node->rValue);
+  }
+  else if(node->nodeType==NODE_UOP)
+  {
+    fprintf(output_file, "\tldc %f\n", node->rValue);
+  }
+  else if(node->nodeType==NODE_OP)
+  {
+    switch(node->op)
+    {
+      case OP_ADD:
+      {
+        fprintf(output_file, "\tfadd\n");
+        break;
+      }
 
+      case OP_SUB:
+      {
+        fprintf(output_file, "\tfsub\n");
+        break;
+      }
+
+      case OP_MUL:
+      {
+        fprintf(output_file, "\tfmul\n");
+        break;
+      }
+      case OP_DIV:
+      {
+        fprintf(output_file, "\tfdiv\n");
+        break;
+      }
+    }
+  }
 }
 
 bool CheckSimpleExpr(struct nodeType *node)
 {
   bool simple = true;
 
+  if(node->nodeType==DIGSEQ
+     || node->nodeType==REALNUMBER
+     || node->nodeType==NODE_OP
+     || node->nodeType==NODE_UOP);
+  else simple = false;
+
   if(node->child_num!=0)
   {
     for(int i=0; i<node->child_num; i++)
       simple = simple & CheckSimpleExpr(nthChild(i+1, node));
   }
-
-  for(int i=0; i<node->child_num; i++)
-  {
-    if(node->nodeType==DIGSEQ
-       || node->nodeType==REALNUMBER
-       || node->nodeType==NODE_OP
-       || node->nodeType==NODE_UOP)/* empty method*/;
-    else simple = false;
-  }
-
+  
   return simple;
 }
 
@@ -467,8 +512,18 @@ void GenMainMethod(struct nodeType *main_method)
           {
             GenLoadArray(variable_node);
 
-            int result = EvaIntExpr(expression_node);
-            fprintf(output_file, "\tldc %d\n", result);
+            if(CheckSimpleExpr(expression_node)==true)
+            {
+              //printf("AA\n");
+              int result = EvaIntExpr(expression_node);
+              fprintf(output_file, "\tldc %d\n", result);
+              fprintf(output_file, "\tputstatic foo/%s I\n", variable_node->string);
+            }
+            else
+            {
+              EvaUnsimpIntExpr(expression_node);
+              fprintf(output_file, "\tputstatic foo/%s I\n", variable_node->string);
+            }
 
             fprintf(output_file, "\tiastore\n");
           }
@@ -476,8 +531,18 @@ void GenMainMethod(struct nodeType *main_method)
           {
             GenLoadArray(variable_node);
 
-            double result = EvaRealExpr(expression_node);
-            fprintf(output_file, "\tldc %f\n", result);
+            if(CheckSimpleExpr(expression_node)==true)
+            {
+              //printf("BB\n");
+              double result = EvaRealExpr(expression_node);
+              fprintf(output_file, "\tldc %f\n", result);
+              fprintf(output_file, "\tputstatic foo/%s F\n", variable_node->string);
+            }
+            else
+            {
+              EvaUnsimpRealExpr(expression_node);
+              fprintf(output_file, "\tputstatic foo/%s F\n", variable_node->string);
+            }
 
             fprintf(output_file, "\tfastore\n");
           }
@@ -487,6 +552,7 @@ void GenMainMethod(struct nodeType *main_method)
         {
           if(CheckSimpleExpr(expression_node)==true)
           {
+            //printf("CC\n");
             int result = EvaIntExpr(expression_node);
             fprintf(output_file, "\tldc %d\n", result);
             fprintf(output_file, "\tputstatic foo/%s I\n", variable_node->string);
@@ -502,6 +568,7 @@ void GenMainMethod(struct nodeType *main_method)
         {
           if(CheckSimpleExpr(expression_node)==true)
           {
+            //printf("DD\n");
             double result = EvaRealExpr(expression_node);
             fprintf(output_file, "\tldc %f\n", result);
             fprintf(output_file, "\tputstatic foo/%s F\n", variable_node->string);
@@ -509,7 +576,7 @@ void GenMainMethod(struct nodeType *main_method)
           else
           {
             EvaUnsimpRealExpr(expression_node);
-            fprintf(output_file, "\tputstatic foo/%s I\n", variable_node->string);
+            fprintf(output_file, "\tputstatic foo/%s F\n", variable_node->string);
           }
         }
 

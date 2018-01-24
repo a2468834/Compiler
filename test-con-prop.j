@@ -61,6 +61,22 @@
 	getstatic foo/a I
 	invokestatic java/lang/String/valueOf(I)Ljava/lang/String;
 	invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+	ldc 3.140000
+	putstatic foo/c F
+	ldc 2.200000
+	ldc -3.300000
+	fmul
+	getstatic foo/c F
+	ldc 1.100000
+	fsub
+	fdiv
+	getstatic foo/c F
+	ldc 4.400000
+	ldc 1.100000
+	fsub
+	fmul
+	fadd
+	putstatic foo/c F
 	getstatic java/lang/System/out Ljava/io/PrintStream;
 	getstatic foo/c F
 	invokestatic java/lang/String/valueOf(F)Ljava/lang/String;

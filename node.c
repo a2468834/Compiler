@@ -691,7 +691,7 @@ char* printNode(struct nodeType *node)
       break;
 
     case REALNUMBER:
-      strcat(result, "\\REALNUMBER");
+      strcat(result, "\\REALNUMBER\n");
       break;
 
     case RPAREN:
@@ -719,7 +719,7 @@ char* printNode(struct nodeType *node)
       break;
 
     default:
-      strcat(result, "\\unknown:%d\n");
+      strcat(result, "\\unknown\n");
       break;
   }
   return result;
