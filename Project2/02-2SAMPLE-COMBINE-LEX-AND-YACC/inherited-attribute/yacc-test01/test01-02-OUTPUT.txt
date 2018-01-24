@@ -1,0 +1,32 @@
+ubuntu@ubuntu-NOVALITE-PX24:~/yacc-test01$ make obj
+flex lextest-inherit.l 
+yacc --defines yacctest-inherit.y
+# cc lex.yy.c -ll -o lex.o
+cc y.tab.c -ly -ll
+yacctest-inherit.y: In function ‘main’:
+yacctest-inherit.y:75:9: warning: incompatible implicit declaration of built-in function ‘exit’ [enabled by default]
+         exit(1);
+         ^
+ubuntu@ubuntu-NOVALITE-PX24:~/yacc-test01$ ./a.out test01.txt
+open file.
+call yyparse
+Final answer is 66.
+end of lexing.
+after call yyparse, res = 0.
+SUCCESS
+          ubuntu@ubuntu-NOVALITE-PX24:~/yacc-test01$ ./a.out test02.txt
+open file.
+call yyparse
+444  answer is -1216798580.
+333  answer is 0.
+333  answer is 0.
+333  answer is 0.
+333  answer is 0.
+333  answer is 0.
+333  answer is 0.
+Final answer is 12345.
+end of lexing.
+after call yyparse, res = 0.
+SUCCESS
+        ubuntu@ubuntu-NOVALITE-PX24:~/yacc-test01$ 
+

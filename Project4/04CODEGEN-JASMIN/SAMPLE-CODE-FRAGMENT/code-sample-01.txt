@@ -1,0 +1,99 @@
+statement : variable ASSIGNOP expression
+            {
+		    //cerr << "++++++++ Use rule 14-1 ++++++++" << endl;
+		    map<string, int>::iterator iter = local_variable.find(string($1));
+		    if(iter != local_variable.end()){
+			    if(symTable[current].table[string($1)].type == string($3)){
+				    if(symTable[current].table[string($1)].type == "integer"){
+					    fout << "    istore " << iter->second << endl;
+				    }
+				    else{
+					    fout << "    fstore " << iter->second << endl;
+				    }
+			    }
+			    else{
+				    cout << "type error" << endl;
+				    exit(1);
+			    }
+		    }
+		    else{
+			    map<string, Attribute>::iterator iter = symTable[global].table.find(string($1));
+			    if(iter != symTable[global].table.end()){
+				    if(symTable[global].table[string($1)].type == string($3)){
+					    if(symTable[global].table[string($1)].type == "integer"){
+						    fout << "    putstatic " << classname << "/" << $1 << " I" << endl;
+					    }
+					    else{
+						    fout << "    putstatic " << classname << "/" << $1 << " F" << endl;
+					    }
+				    }
+				    else{
+					    cout << "type error" << endl;
+					    exit(1);
+				    }
+			    }
+			    else{
+				    cout << "invalid variable" << endl;
+				    exit(1);
+			    }
+		    }
+		    fout << endl;
+	    }
+	  | procedure_statement
+            {
+		    //cerr << "++++++++ Use rule 14-2 ++++++++" << endl;
+	    }
+	  | compound_statement
+            {
+		    //cerr << "++++++++ Use rule 14-3 ++++++++" << endl;
+	    }
+	  | IF expression 
+            {
+		    if_tag += 1;
+		    if_tag_stack.push(if_tag);
+		    if(string($2) == "<") fout << "    ifge IF_false" << if_tag_stack.top() << endl;
+		    else if(string($2) == ">") fout << "    ifle IF_false" << if_tag_stack.top() << endl;
+		    else if(string($2) == "=") fout << "    ifne IF_false" << if_tag_stack.top() << endl;
+		    else if(string($2) == "<=") fout << "    ifgt IF_false" << if_tag_stack.top() << endl;
+		    else if(string($2) == ">=") fout << "    iflt IF_false" << if_tag_stack.top() << endl;
+		    else if(string($2) == "!=") fout << "    ifeq IF_false" << if_tag_stack.top() << endl;
+	    }
+	    THEN statement 
+            {
+		    fout << "    goto IF_exit" << if_tag_stack.top() << endl;
+		    fout << "IF_false" << if_tag_stack.top() << ":" << endl;
+	    }
+	    ELSE statement
+            {
+		    //cerr << "++++++++ Use rule 14-4 ++++++++" << endl;
+		    fout << "IF_exit" << if_tag_stack.top() << ":" << endl;
+		    if_tag_stack.pop();
+	    }
+	  | WHILE 
+            {
+		    while_tag += 1;
+		    while_tag_stack.push(while_tag);
+		    fout << "WHILE_true" << while_tag_stack.top() << ":" << endl;
+	    }
+	    expression 
+            {
+		    if(string($3) == "<") fout << "    ifge WHILE_exit" << while_tag_stack.top() << endl;
+		    else if(string($3) == ">") fout << "    ifle WHILE_exit" << while_tag_stack.top() << endl;
+		    else if(string($3) == "=") fout << "    ifne WHILE_exit" << while_tag_stack.top() << endl;
+		    else if(string($3) == "<=") fout << "    ifgt WHILE_exit" << while_tag_stack.top() << endl;
+		    else if(string($3) == ">=") fout << "    iflt WHILE_exit" << while_tag_stack.top() << endl;
+		    else if(string($3) == "!=") fout << "    ifeq WHILE_exit" << while_tag_stack.top() << endl;
+	    }
+	    DO statement
+            {
+		    //cerr << "++++++++ Use rule 14-5 ++++++++" << endl;
+		    fout << "    goto WHILE_true" << while_tag_stack.top() << endl;
+		    fout << "WHILE_exit" << while_tag_stack.top() << ":" << endl;
+		    while_tag_stack.pop();
+	    };
+				
+variable : ID tail 
+           {
+		   //cerr << "++++++++ Use rule 15-1 ++++++++" << endl;
+		   strcpy($$, $1);
+	   };

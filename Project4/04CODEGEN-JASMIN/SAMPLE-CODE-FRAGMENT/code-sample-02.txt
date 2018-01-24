@@ -1,0 +1,249 @@
+
+statement : variable ASSIGNOP expression
+	{// type checking whether expression's type equals to variable
+		if(($3->type)==NULL||($1->type)==NULL){
+			fprintf(pFile,"\tpop\n");////////////
+			yyerror("type is null, can not assign value");
+			error_count++;
+		}
+		else{
+			if(strcmp($1->type,$3->type)==0){
+				if(strcmp($1->type,"integer")==0){
+					if($1->level==0){
+						if($1->func_flag!=1)//this is not function return
+							fprintf(pFile,"\tputstatic %s/%s I\n",program_name,$1->name);/////
+						else
+							fprintf(pFile,"\tireturn\n");
+					}
+					else{
+						if(array_flag==0)
+							fprintf(pFile,"\tistore %d\n",$1->num);/////
+						else{
+							fprintf(pFile,"\tiastore\n");/////
+							array_flag=0;
+						}
+					}
+					$1->ivalue=$3->ivalue;
+				}
+				else if(strcmp($1->type,"real")==0){
+					if($1->level==0){
+						if($1->func_flag!=1)//this is not function return
+							fprintf(pFile,"\tputstatic %s/%s F\n",program_name,$1->name);/////
+						else
+							fprintf(pFile,"\tfreturn\n");
+					}
+					else{
+						if(array_flag==0)
+							fprintf(pFile,"\tfstore %d\n",$1->num);//////
+						else{
+							fprintf(pFile,"\tfastore %d\n",$1->num);//////
+							array_flag=0;
+						}
+					}
+					$1->fvalue=$3->fvalue;
+				}
+			}
+			else if(strcmp($1->type,"error")==0){
+				fprintf(pFile,"\tpop\n");////////////
+			}
+			else{
+				fprintf(pFile,"\tpop\n");////////////
+				yyerror("error assignment/different type");
+				error_count++;
+			}
+		}
+	}
+	| procedure_statement
+	| compound_statement
+	| IF
+	{
+		iftop++;
+		label_count++;
+		ifstack[iftop]=label_count;
+		fprintf(pFile,"Ltest_%d:\n",ifstack[iftop]);////////
+	}
+	expression THEN 
+	{
+		//printf("a new scope is generated\n");
+		fprintf(pFile,"Ltrue_%d:\n",ifstack[iftop]);///////
+	}
+	statement
+	{
+		//printf("a scope is closed\n");
+		fprintf(pFile,"\tgoto Lexit_%d\n",ifstack[iftop]);///////
+	}
+	ELSE
+	{
+		eltop++;
+		elstack[eltop]=ifstack[iftop];
+		iftop--;
+		fprintf(pFile,"Lfalse_%d:\n",elstack[eltop]);///////
+		//printf("a new scope is generated\n");
+
+	}
+	statement
+	{
+		fprintf(pFile,"Lexit_%d:\n",elstack[eltop]);///////
+		//printf("a scope is closed\n");
+		eltop--;
+	}
+	| WHILE
+	{
+		iftop++;
+		label_count++;
+		ifstack[iftop]=label_count;
+		fprintf(pFile,"Ltest_%d:\n",ifstack[iftop]);////////
+	}
+	expression DO
+	{
+		fprintf(pFile,"Ltrue_%d:\n",ifstack[iftop]);///////
+		//printf("a new scope is generated\n");
+	}
+	statement
+	{
+		//printf("a scope is closed\n");
+		fprintf(pFile,"\tgoto Ltest_%d\n",ifstack[iftop]);////////
+		fprintf(pFile,"Lfalse_%d:\n",ifstack[iftop]);///////
+		iftop--;
+	}
+	;
+
+variable : ID
+	{//to check ID from symbol table
+		struct symbol* tmp;
+		tmp=search_all_symbol_name($1);
+		struct symbol* tmp1=(struct symbol*)malloc(sizeof(struct symbol));
+		if(tmp==NULL){
+			tmp1->name=$1;
+			tmp1->type="error";
+			yyerror("variable undefined");
+			error_count++;
+		}
+		else{
+			tmp1->name=$1;
+			tmp1->type=tmp->type;
+			tmp1->upper=tmp->upper;
+			tmp1->lower=tmp->lower;
+			tmp1->level=tmp->level;
+			tmp1->func_flag=tmp->func_flag;//function
+			tmp1->num=tmp->num;
+		}
+		$$=tmp1;
+	}
+	| ID 
+	{
+		//this is array variable
+		struct symbol* tmp;
+		tmp=search_all_symbol_name($1);
+		if(tmp!=NULL && (tmp->upper-tmp->lower)>0){
+			fprintf(pFile,"\taload %d\n",tmp->num);
+		}
+	}
+	LBRAC expression RBRAC
+	{//this is array variable
+		struct symbol* tmp;
+		struct symbol* tmp1=(struct symbol*)malloc(sizeof(struct symbol));
+		tmp=search_all_symbol_name($1);
+		if(tmp==NULL){
+			tmp1->name=$1;
+			tmp1->type="error";
+			yyerror("variable undefined");
+			error_count++;
+		}
+		else{
+			if(($4->ivalue<tmp->lower)||($4->ivalue>tmp->upper)){
+				fprintf(pFile,"\tpop\n");///////////expression
+				fprintf(pFile,"\tpop\n");///////////aload
+				tmp1->name=$1;
+				tmp1->type="error";
+				yyerror("array's index is out of range");
+				error_count++;
+			}
+			else{
+				array_flag=1;
+				fprintf(pFile,"\tsipush %d\n",tmp->lower);
+				fprintf(pFile,"\tisub\n");
+				//insert new symbol
+				tmp1->name=$1;
+				tmp1->type=tmp->type;
+				tmp1->upper=tmp->upper;
+				tmp1->lower=tmp->lower;
+				tmp1->level=tmp->level;
+				tmp1->num=tmp->num;
+			}
+		}
+		$$=tmp1;
+	}
+	;
+
+procedure_statement : ID
+	{
+		struct symbol* tmp=(struct symbol*)malloc(sizeof(struct symbol));
+		tmp=search_all_symbol_name($1);
+		if(tmp==NULL){
+			yyerror("function/procedure name not found");
+			error_count++;
+		}
+		else if(tmp->para_node!=NULL){
+			yyerror("function/procedure should have parameter(s)");
+			error_count++;
+		}
+		//
+		//only find the function name?
+		//
+	}
+	| ID LPAREN expression_list RPAREN
+	{
+		//call function with parameter
+		//need to do type checking
+		struct symbol* tmp;
+		struct para* p;
+		struct symbol* q;
+		tmp=search_all_symbol_name($1);
+		
+		if(tmp==NULL){
+			yyerror("function/procedure name not found");
+			error_count++;
+		}
+		else if(tmp!=NULL && tmp->para_node!=NULL){
+			p=tmp->para_node;
+			q=$3;
+			while(p!=NULL && q!=NULL){
+				if((strcmp(p->ptype,q->type)==0)&&((p->upper-p->lower)==(q->upper-q->lower))){
+					p=p->pnext;
+					q=q->next;
+				}
+				else{
+					break;
+				}
+
+			}
+			if(p!=NULL || q!=NULL){
+				yyerror("parameters is wrong when function call");
+				error_count++;
+			}
+			else{
+				//parameters are matched
+				fprintf(pFile,"\tinvokestatic %s/%s(",program_name,$1);//////////
+				q=$3;
+				while(q!=NULL){
+					if(strcmp(q->type,"integer")==0)
+						fprintf(pFile,"I");//////////
+					else if(strcmp(q->type,"real")==0)
+						fprintf(pFile,"F");///////////
+					q=q->next;
+				}fprintf(pFile,")");
+				if(tmp->type==NULL)
+					fprintf(pFile,"V\n");//////////
+				else if(strcmp(tmp->type,"integer")==0)
+					fprintf(pFile,"I\n");//////////
+				else if(strcmp(q->type,"real")==0)
+					fprintf(pFile,"F\n");//////////
+			}
+		}
+		else{
+			yyerror("this is not function");
+			error_count++;
+		}
+	}
+	;

@@ -1,0 +1,17 @@
+### Readme for the director ubuntu/yacc-test01
+### 20151120
+
+This example shows the following basic application of lex and yacc.
+
+1. This example shows the cooperation between lex and yacc.
+
+2. This example shows how to trafer values from lex to yacc via the yylval variable (see lextest-inherit.l).
+
+3. This example shows how yacc computes synthesized attribute
+(See the ans synthesized attribute in yacctest-inherit.y).
+
+4. This example shows that yacc CANNOT compute the inherited attributes correctly (see the thus inherited attribute in yacctest-inherit.y).
+
+5. a.out is built with Makefile. The output on the two test cases (one correct, one wrong) is included in the file test01-02-OUTPUT.txt.
+
+####

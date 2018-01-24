@@ -1,0 +1,719 @@
+From: <¥Ñ Windows Internet Explorer 8 Àx¦s>
+Subject: Jasmin User Guide
+Date: Tue, 17 Jan 2012 18:46:01 +0800
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----=_NextPart_000_0000_01CCD548.423C2020"
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2900.6157
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0000_01CCD548.423C2020
+Content-Type: text/html;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://jasmin.sourceforge.net/guide.html
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Jasmin User Guide</TITLE>
+<META content=3D"text/html; charset=3Dbig5" =
+http-equiv=3DContent-Type><LINK=20
+rel=3Dstylesheet type=3Dtext/css =
+href=3D"http://jasmin.sourceforge.net/style.css">
+<META name=3DGENERATOR content=3D"MSHTML 8.00.6001.19170"></HEAD>
+<BODY>
+<TABLE>
+  <TBODY>
+  <TR>
+    <TD width=3D550>
+      <CENTER>
+      <P><IMG src=3D"http://jasmin.sourceforge.net/jasmin_icon.jpg"></P>
+      <P>
+      <DIV class=3Dh1>JASMIN USER GUIDE</DIV>Jonathan Meyer, July 1996=20
+      <P></P></CENTER>
+      <H1>About This Document</H1>This guide describes the rules and =
+syntax used=20
+      in Jasmin, and how to run Jasmin. Note that this document doesn't =
+explain=20
+      the Java Virtual Machine itself, or give syntax notes for every=20
+      instruction known to Jasmin. See the Java Virtual Machine =
+specification=20
+      for more information on the JVM.
+      <P>You should also see:
+      <P>
+      <DL>
+        <DT><A href=3D"http://jasmin.sourceforge.net/about.html">About =
+Jasmin</A>=20
+        <DD>describes what Jasmin is, who might find it interesting, =
+etc.=20
+        Includes an example piece of code.
+        <P></P>
+        <DT><A =
+href=3D"http://jasmin.sourceforge.net/instructions.html">Jasmin=20
+        Instructions</A>=20
+        <DD>Describes the syntax of JVM instructions in Jasmin.
+        <P></P></DD></DL>
+      <H1>What is Jasmin?</H1>
+      <P>Jasmin is an assembler for the Java Virtual Machine. It takes =
+ASCII=20
+      descriptions of Java classes, written in a simple assembler-like =
+syntax=20
+      using the Java Virtual Machine instruction set. It converts them =
+into=20
+      binary Java class files, suitable for loading by a Java runtime =
+system.
+      <P></P>
+      <P>Jasmin was originally created as a companion to the book "Java =
+Virtual=20
+      Machine", written by Jon Meyer and Troy Downing and published by =
+O'Reilly=20
+      Associates. The book is now out of print. Jasmin survives as a =
+SourceForge=20
+      Open Source project. </P>
+      <H1>Jasmin Design</H1>
+      <P>Jasmin is designed as a simple assembler. It has a clean =
+easy-to-learn=20
+      syntax with few bells and whistles. Where possible, Jasmin adopts =
+a=20
+      one-to-one mapping between its syntax and the conventions followed =
+by Java=20
+      class files. For example, package names in Jasmin are delimited =
+with the=20
+      '/' character (e.g. "java/lang/String") used by the class file =
+format,=20
+      instead of the '.' character (java.lang.String) used in the Java=20
+      language.</P>
+      <P>The Jasmin assembler does little compile-time processing or =
+checking of=20
+      the input code. For example, it doesn't check that classes you =
+reference=20
+      actually exist, or that your type descriptors are well formed. =
+Jasmin also=20
+      lacks many of the feautures found in full macro assemblers. For =
+example,=20
+      it doesn't inline mathematical expressions, perform variable=20
+      substitutions, or support macros.</P>
+      <P>On the other hand, using Jasmin you can quickly try out nearly =
+all of=20
+      the features of the Java Virtual Machine, including methods, =
+fields,=20
+      subroutines, exception handlers, and so on. The Jasmin syntax is =
+also=20
+      readable and compact.</P>
+      <H1>Running Jasmin</H1>
+      <P>The <CODE>jasmin.jar</CODE> file is an executable JAR file that =
+runs=20
+      Jasmin. For example:</P><PRE><STRONG>    java -jar jasmin.jar =
+myfile.j</STRONG></PRE>or <PRE><STRONG>    java Jasmin =
+myfile.j</STRONG></PRE>(if jasmin.jar is=20
+      already in your classpath)=20
+      <P>Jasmin looks at the <CODE>.class</CODE> directive contained in =
+the=20
+      myfile.j file to decide where to place the output class file. So =
+if=20
+      myfile.j starts with:</P><PRE>    .class mypackage/MyClass
+</PRE>
+      <P>then Jasmin will place the output class file "MyClass.class" in =
+the=20
+      subdirectory "mypackage" of the current directory. It will create =
+the=20
+      mypackage directory if it doesn't exist.</P>
+      <P>You can use the "-d" option to tell jasmin to place the output =
+in an=20
+      alternative directory. For example,</P><PRE><STRONG>    java -jar =
+jasmin.jar -d /tmp myfile.j </STRONG></PRE>
+      <P>will place the output in /tmp/mypackage/MyClass.class.</P>
+      <P>Finally, you can use the "-g" option to tell Jasmin to include =
+line=20
+      number information (used by debuggers) in the resulting .class =
+file.=20
+      Jasmin will number the lines in the Jasmin source file that JVM=20
+      instructions appear on. Then, if an error occurs, you can see what =
+
+      instruction in the Jasmin source caused the error. Note that =
+specifying=20
+      "-g" causes any .line directives within the Jasmin file to be =
+ignored.=20
+</P>
+      <H1>Statements</H1>
+      <P>Jasmin source files consists of a sequence of newline-separated =
+
+      statements. There are three types of statement: </P>
+      <UL>
+        <LI>directives=20
+        <LI>instructions=20
+        <LI>labels </LI></UL>
+      <P>Directives and instructions can take <I>parameters</I>. These=20
+      parameters are placed on the same line as the directive or =
+instruction,=20
+      separated by spaces.</P>
+      <H3>Directives</H3>
+      <P>Directive statements are used to give Jasmin meta-level =
+information.=20
+      Directive statements consist of a directive name, and then zero or =
+more=20
+      parameters separated by spaces, then a newline.</P>
+      <P>All directive names start with a "." character. The directives =
+in=20
+      Jasmin are:</P><PRE>    .catch .class .end .field .implements =
+.interface .limit .line=20
+    .method .source .super .throws .var
+</PRE>
+      <P>Some example directive statements are:</P><PRE>    .limit stack =
+10
+
+    .method public myMethod()V
+
+    .class Foo
+</PRE>
+      <P>The parameters used by each directive are described in more =
+detail=20
+      later in the document.</P>
+      <H3>Instructions</H3>
+      <P>An instruction statement consists of an instruction name, zero =
+or more=20
+      parameters separated by spaces, and a newline.</P>
+      <P>Jasmin uses the standard mnemonics for JVM opcodes as =
+instruction=20
+      names. For example, aload_1, bipush and iinc are all Jasmin =
+instruction=20
+      names.</P>
+      <P>Here are some examples of instruction statements:</P><PRE>     =
+ldc    "Hello World"
+     iinc   1 -1
+     bipush 10
+</PRE>
+      <P></P>See <A=20
+      href=3D"http://jasmin.sourceforge.net/instructions.html">Jasmin=20
+      Instructions</A> for more details on the syntax of instructions in =
+Jasmin.
+      <P></P>
+      <H3>Labels</H3>
+      <P></P>A Jasmin label statement consists of a name followed by a =
+':', and=20
+      a newline. For example:
+      <P></P><PRE>    Foo:
+
+    Label:
+</PRE>
+      <P>Label names cannot start with a numeric digit, and cannot =
+contain any=20
+      of the special characters:</P><PRE>   =3D : . " -
+</PRE>
+      <P>You cannot use directive names or instruction names as labels. =
+Other=20
+      than that, there are few restrictions on label names. For example, =
+you=20
+      could use the label:</P><PRE>   #_1:
+</PRE>
+      <P>Labels can only be used within method definitions. The names =
+are local=20
+      to that method.</P>
+      <H1>The Jasmin Tokenizer</H1>
+      <P>Jasmin tokenizes its input stream, splitting the stream into =
+tokens by=20
+      looking for whitespace characters (spaces, tabs and newlines). The =
+
+      tokenizer looks for:</P>
+      <UL>
+        <LI>directive names=20
+        <LI>instruction names=20
+        <LI>labels=20
+        <LI>comments=20
+        <LI>type descriptor names=20
+        <LI>class names=20
+        <LI>numbers and quoted strings=20
+        <LI>etc. </LI></UL>
+      <P>The rules used by the tokenizer are described below:</P>
+      <H3>Comments</H3>
+      <P>A comment is a token that starts with a ';' character, and =
+terminates=20
+      with the newline character at the end of the line. </P>
+      <P>Note that the semicolon must be preceded by a whitespace =
+character (a=20
+      space, tab, newline), i.e. embedded semicolons are ignored. For=20
+      example,</P><PRE>   abc;def
+</PRE>
+      <P>is treated as a single token "abc;def", and</P><PRE>   =
+Ljava/lang/String;
+</PRE>
+      <P>is the token "Ljava/lang/String;", whereas</P><PRE>   foo ; baz =
+ding
+</PRE>
+      <P>is the token "foo" followed by a comment "baz ding".</P>
+      <H3>Numbers and Strings</H3>
+      <P>In Jasmin, only simple decimal and integer numeric formats are=20
+      recognized. Floats in scientific or exponent format are not yet =
+supported.=20
+      Character codes and octal aren't currently supported either. This =
+means=20
+      you can have:</P><PRE>    1, 123, .25, 0.03, 0xA
+</PRE>
+      <P>but not</P><PRE>    1e-10, 'a', '\u123'
+</PRE>
+      <P>Quoted strings are also very basic. The full range of backslash =
+escape=20
+      sequences are not supported yet, although "\n" and "\t" are.</P>
+      <H3>Class Names</H3>
+      <P></P>Class names in Jasmin should be written using the Java =
+class file=20
+      format conventions, so java.lang.String becomes java/lang/String.
+      <P></P>
+      <H3>Type Descriptors</H3>
+      <P>Type information is also written as they appear in class files =
+(e.g.=20
+      the descriptor I speficies an integer, [Ljava/lang/Thread; is an =
+array of=20
+      Threads, etc.).</P>
+      <H3>Methods</H3>
+      <P>Method names are specified using a single token, e.g.</P><PRE>  =
+   java/io/PrintStream/println(Ljava/lang/String;)V
+</PRE>
+      <P>is the method called "println" in the class =
+java.io.PrintStream, which=20
+      has the type descriptor "(Ljava/lang/String;)V" (i.e. it takes a =
+String=20
+      and returns no result). In general, a method specification is =
+formed of=20
+      three parts: the characters before the last '/' form the class =
+name. The=20
+      characters between the last '/' and '(' are the method name. The =
+rest of=20
+      the string is the type descriptor for the method.</P><PRE>     =
+foo/baz/Myclass/myMethod(Ljava/lang/String;)V
+     ---------------         ---------------------
+           |         --------         |
+           |            |             |
+         class        method       descriptor
+
+</PRE>
+      <P>As another example, you would call the Java method: </P><PRE>   =
+class mypackage.MyClass {
+       int foo(Object a, int b[]) { ... }
+   }
+</PRE>
+      <P>using:</P><PRE>   invokevirtual =
+mypackage/MyClass/foo(Ljava/lang/Object;[I)I
+</PRE>
+      <H3>Fields</H3>
+      <P>Field names are specified in Jasmin using two tokens, one =
+giving the=20
+      name and class of the field, the other giving its descriptor. For=20
+      example:</P><PRE>    getstatic mypackage/MyClass/my_font   =
+Ljava/lang/Font;
+</PRE>
+      <P>gets the value of the field called "my_font" in the class=20
+      mypackage.MyClass. The type of the field is "Ljava/lang/Font;" =
+(i.e. a=20
+      Font object).</P>
+      <H1>FILES</H1>
+      <P>Jasmin files start by giving information on the class being =
+defined in=20
+      the file - such as the name of the class, the name of the source =
+file that=20
+      the class originated from, the name of the superclass, etc.</P>
+      <P>Typically, a Jasmin file starts with the three =
+directives:</P><PRE>    .source &lt;source-file&gt;
+    .class  &lt;access-spec&gt; &lt;class-name&gt;
+    .super  &lt;class-name&gt;
+</PRE>
+      <P>For example, the file defining MyClass might start with the=20
+      directives:</P><PRE>    .source MyClass.j
+    .class  public MyClass
+    .super  java/lang/Object
+</PRE>
+      <H3>.source directive</H3>
+      <P>The .source directive is optional. It specifies the value of =
+the=20
+      "SourceFile" attribute for the class file. (This is used by Java =
+to print=20
+      out debugging info if something goes wrong in one of the methods =
+in the=20
+      class). If you generated the Jasmin file automatically (e.g. as =
+the result=20
+      of compiling a file written in another syntax) you should use the =
+.source=20
+      directive to tell Java the name of the originating file. Note that =
+the=20
+      source file name should not include any pathname. Use "foo.src" =
+but not=20
+      "/home/user/foo.src".</P>
+      <P>If no .source directive is given, the name of the Jasmin file =
+you are=20
+      compiling is used instead as the SourceFile attribute instead.</P>
+      <H3>.class and .super directives</H3>
+      <P>The .class and .super directive tell the JVM the name of this =
+class and=20
+      its superclass. These directives take parameters as follows: </P>
+      <DL>
+        <DT>&lt;class-name&gt;=20
+        <DD>is the full name of the class, including any package names. =
+For=20
+        example foo/baz/MyClass.
+        <P></P>
+        <DT>&lt;access-spec&gt;=20
+        <DD>defines access permissions and other attributes for the =
+class. This=20
+        is a list of zero or more of the following keywords:
+        <P>
+        <DL>
+          <DD>public, final, super, interface, abstract =
+</DD></DL></DD></DL>
+      <H3>.interface directive</H3>
+      <P>Note that, instead of using the directive .class, you can =
+alternatively=20
+      use the directive .interface. This has the same syntax as the =
+.class=20
+      directive, but indicates that the Jasmin file is defining a Java=20
+      interface. e.g.</P><PRE>    .interface public foo
+</PRE>
+      <H3>.implements directive</H3>
+      <P>After .source, .class and .super, you can list the interfaces =
+that are=20
+      implemented by the class you are defining, using the .implements=20
+      directive. The syntax of .implements is:</P><PRE>    .implements =
+&lt;class-name&gt;
+</PRE>
+      <P>where &lt;class-name&gt; has the same format as was used by =
+.class and=20
+      .super. For example:</P><PRE>    .class foo
+    .super java/lang/Object
+    .implements Edible
+    .implements java/lang/Throwable
+</PRE>
+      <H1>Field Definitions</H1>
+      <P>After the header information, the next section of the Jasmin =
+file is a=20
+      list of field definitions.</P>
+      <P>A field is defined using the .field directive:</P><PRE>    =
+.field &lt;access-spec&gt; &lt;field-name&gt; &lt;descriptor&gt; [ =3D =
+&lt;value&gt; ]
+</PRE>
+      <P>where:</P>
+      <DL>
+        <DT>&lt;access-spec&gt;=20
+        <DD>is one of the keywords:=20
+        <DL>
+          <DD>public, private, protected, static, final, volatile, =
+transient=20
+          </DD></DL></DD></DL>
+      <P>
+      <DT>&lt;field-name&gt;=20
+      <DD>is the name of the field.
+      <P></P>
+      <DT>&lt;descriptor&gt;=20
+      <DD>is its type descriptor.
+      <P></P>
+      <DT>&lt;value&gt;=20
+      <DD>is an integer, a quoted string or a decimal number, giving the =
+initial=20
+      value of the field (for final fields).
+      <P>
+      <DL></DL>
+      <P>For example, the Java field definition:</P><PRE>    public int =
+foo;
+</PRE>
+      <P>becomes</P><PRE>    .field public foo I
+</PRE>
+      <P>whereas the constant:</P><PRE>    public static final float PI =
+=3D 3.14;
+</PRE>
+      <P>becomes</P><PRE>    .field public static final PI F =3D 3.14
+</PRE>
+      <H1>Method Definitions</H1>
+      <P>After listing the fields of the class, the rest of the Jasmin =
+file=20
+      lists methods defined by the class.</P>
+      <P>A method is defined using the basic form:</P><PRE>    .method =
+&lt;access-spec&gt; &lt;method-spec&gt;
+        &lt;statements&gt;
+    .end method
+</PRE>
+      <P>where:</P>
+      <DL>
+        <DT>&lt;access-spec&gt;=20
+        <DD>is one of the keywords: public, private, protected, static, =
+final,=20
+        synchronized, native, abstract
+        <P></P>
+        <DT>&lt;method-spec&gt;=20
+        <DD>is the name and type descriptor of the method.
+        <P></P>
+        <DT>&lt;statements&gt;=20
+        <DD>is the code defining the body of the method.
+        <P></P></DD></DL>
+      <P>Method definitions cannot be nested. Also, Jasmin does not =
+insert an=20
+      implicit 'return' instruction at the end of a method. It is up to =
+you to=20
+      ensure that your methods return cleanly. So the most basic Jasmin =
+method=20
+      is something like:</P><PRE>   .method foo()V
+       return     ; must give a return statement
+   .end method
+</PRE>
+      <H3>Method Directives</H3>
+      <P>The following directives can be used only within method=20
+definitions:</P>
+      <DL>
+        <DT><PRE>.limit stack &lt;integer&gt;</PRE>
+        <P></P>
+        <DD>Sets the maximum size of the operand stack required by the =
+method.=20
+        <DT><PRE>.limit locals &lt;integer&gt;</PRE>
+        <P></P>
+        <DD>Sets the number of local variables required by the method.=20
+        <DT><PRE>.line &lt;integer&gt;</PRE>
+        <P></P>
+        <DD>This is used to tag the subsequent instruction(s) with a =
+line=20
+        number. Debuggers use this information, together with the name =
+of the=20
+        source file (see .source above) to show at what line in a method =
+things=20
+        went wrong. If you are generating Jasmin files by compiling a =
+source=20
+        file, this directive lets you indicate what line numbers in the =
+source=20
+        file produced corrosponding Jasmin instructions. For example: =
+<PRE>    .method foo()V
+    .line 5   =20
+        bipush 10    // these instructions generated from line 5
+        istore_2     // of the source file.
+    .line 6
+        ...=20
+</PRE>
+        <DT><PRE>.var &lt;var-number&gt; is  &lt;name&gt; =
+&lt;descriptor&gt; from &lt;label1&gt; to &lt;label2&gt;</PRE>
+        <P></P>
+        <DD>The .var directive is used to define the name, type =
+descriptor and=20
+        scope of a local variable number. This information is used by =
+debuggers=20
+        so that they can be more helpful when printing out the values of =
+local=20
+        variables (rather than printing just a local variable number, =
+the=20
+        debugger can actually print out the name of the variable). For =
+example: <PRE>    .method foo()V
+        .limit locals 1
+
+        ; declare variable 0 as an "int Count;"
+        ; whose scope is the code between Label1 and Label2
+        ;
+        .var 0 is Count I from Label1 to Label2
+
+    Label1:
+        bipush 10
+        istore_0
+    Label2:
+
+        return
+    .end method
+</PRE>
+        <DT><PRE>.throws &lt;classname&gt;</PRE>
+        <P></P>
+        <DD>Indicates that this method can throw exceptions of the type=20
+        indicated by &lt;classname&gt;. e.g. <PRE>    .throws =
+java/io/IOException
+</PRE>This information isn't required by Java runtime systems, but it is =
+
+        used by the Java compiler to check that methods either catch =
+exceptions=20
+        they can cause, or declare that they throw them.=20
+        <DT><PRE>.catch &lt;classname&gt; from &lt;label1&gt; to =
+&lt;label2&gt; using &lt;label3&gt;</PRE>
+        <P></P>
+        <DD>Appends an entry to the end of the exceptions table for the =
+method.=20
+        The entry indicates that when an exception which is an instance =
+of=20
+        &lt;classname&gt; or one of its subclasses is thrown while =
+executing the=20
+        code between &lt;label1&gt; and &lt;label2&gt;, then the runtime =
+system=20
+        should jump to &lt;label3&gt;. e.g.
+        <P><PRE>    .catch java/io/IOException from L1 to L2 using =
+IO_Handler
+</PRE>If classname is the keyword "all", then exceptions of any class=20
+        are caught by the handler.
+        <P></P></DD></DL>
+      <H3>Abstract Methods</H3>
+      <P>To declare an abstract method, write a method with no body. =
+e.g.</P><PRE>    .method abstract myAbstract()V
+    .end method
+</PRE>
+      <P>note that abstract methods can have .throws directives, =
+e.g.</P><PRE>    .method abstract anotherAbstract()V
+        .throws java/io/IOException
+    .end method
+</PRE>
+      <H1>Instructions</H1>
+      <P>JVM instructions are placed between the <CODE>.method</CODE> =
+and=20
+      <CODE>.end method</CODE> directives. VM instructions can take zero =
+or more=20
+      parameters, depending on the type of instruction used. Some =
+example=20
+      instructions are shown below: </P><PRE>    iinc 1 -3    ; =
+decrement local variable 1 by 3
+
+    bipush 10    ; push the integer 10 onto the stack
+
+    pop          ; remove the top item from the stack.
+
+</PRE>
+      <P>See <A =
+href=3D"http://jasmin.sourceforge.net/instructions.html">Jasmin=20
+      Instructions</A> for more details on the syntax of instructions in =
+Jasmin.=20
+      </P>
+      <HR>
+
+      <ADDRESS>Copyright (c) Jonathan Meyer, July 1996</ADDRESS>
+      <HR>
+      <A href=3D"http://jasmin.sourceforge.net/">Jasmin Home</A> | <A=20
+      href=3D"http://www.cybergrain.com/">Jon Meyer's Home</A>=20
+</DD></TD></TR></TBODY></TABLE></BODY></HTML>
+
+------=_NextPart_000_0000_01CCD548.423C2020
+Content-Type: image/jpeg
+Content-Transfer-Encoding: base64
+Content-Location: http://jasmin.sourceforge.net/jasmin_icon.jpg
+
+/9j/4AAQSkZJRgABAgEASwBLAAD/7QHwUGhvdG9zaG9wIDMuMAA4QklNA+kAAAAAAHgAAwAAAEgA
+SAAAAAAC2gIo/+H/4gL5AkYDRwUoA/wAAgAAAEgASAAAAAAC2AIoAAEAAABkAAAAAQADAwMAAAAB
+Jw8AAQABAAAAAAAAAAAAAAAAYAgAGQGQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4
+QklNA+0AAAAAABAASwAAAAEAAQBLAAAAAQABOEJJTQPzAAAAAAAIAAAAAAAAAAA4QklNJxAAAAAA
+AAoAAQAAAAAAAAACOEJJTQP1AAAAAABIAC9mZgABAGxmZgAGAAAAAAABAC9mZgABAKGZmgAGAAAA
+AAABADIAAAABAFoAAAAGAAAAAAABADUAAAABAC0AAAAGAAAAAAABOEJJTQP4AAAAAABwAAD/////
+////////////////////////A+gAAAAA/////////////////////////////wPoAAAAAP//////
+//////////////////////8D6AAAAAD/////////////////////////////A+gAADhCSU0EAAAA
+AAAAAgACOEJJTQQCAAAAAAAeAAAAAAAAAAAAAAAAAAAAAQABAAEAAAAAAAIAAAACOEJJTQQGAAAA
+AAACAAT/7gAOQWRvYmUAZAAAAAAB/9sAhAAGBAQEBQQGBQUGCQYFBgkLCAYGCAsMCgoLCgoMEAwM
+DAwMDBAMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMAQcHBw0MDRgQEBgUDg4OFBQODg4OFBEM
+DAwMDBERDAwMDAwMEQwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCABZAFwDAREAAhEB
+AxEB/8QBogAAAAcBAQEBAQAAAAAAAAAABAUDAgYBAAcICQoLAQACAgMBAQEBAQAAAAAAAAABAAID
+BAUGBwgJCgsQAAIBAwMCBAIGBwMEAgYCcwECAxEEAAUhEjFBUQYTYSJxgRQykaEHFbFCI8FS0eEz
+FmLwJHKC8SVDNFOSorJjc8I1RCeTo7M2F1RkdMPS4ggmgwkKGBmElEVGpLRW01UoGvLj88TU5PRl
+dYWVpbXF1eX1ZnaGlqa2xtbm9jdHV2d3h5ent8fX5/c4SFhoeIiYqLjI2Oj4KTlJWWl5iZmpucnZ
+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
+
+------=_NextPart_000_0000_01CCD548.423C2020
+Content-Type: text/css;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://jasmin.sourceforge.net/style.css
+
+TD {
+	LINE-HEIGHT: 16px; FONT-FAMILY: Verdana,Arial,Helvetica,sans-serif; =
+COLOR: #000000; FONT-SIZE: 12px
+}
+TD H1 {
+	PADDING-BOTTOM: 1px; LINE-HEIGHT: 24px; BACKGROUND-COLOR: #303030; =
+PADDING-LEFT: 4px; PADDING-RIGHT: 1px; FONT-FAMILY: Tahoma; COLOR: =
+white; FONT-SIZE: 20px; FONT-WEIGHT: bold; PADDING-TOP: 1px
+}
+TD H2 {
+	LINE-HEIGHT: 16px; FONT-FAMILY: Tahoma; COLOR: #000000; FONT-SIZE: =
+14px; FONT-WEIGHT: bold
+}
+TD H3 {
+	LINE-HEIGHT: 16px; FONT-FAMILY: Tahoma; COLOR: #000000; FONT-SIZE: =
+12px; FONT-WEIGHT: bold
+}
+.h1 {
+	LINE-HEIGHT: 20px; FONT-FAMILY: Times; COLOR: #000000; FONT-SIZE: 18px; =
+FONT-WEIGHT: bold
+}
+A {
+	COLOR: #b11; TEXT-DECORATION: underline
+}
+A:visited {
+	COLOR: #b11
+}
+A:hover {
+	COLOR: #f88
+}
+PRE.code {
+	LINE-HEIGHT: 14px; FONT-FAMILY: courier new; COLOR: #202060; FONT-SIZE: =
+12px
+}
+FONT.code {
+	LINE-HEIGHT: 14px; FONT-FAMILY: courier new; COLOR: #202060; FONT-SIZE: =
+12px
+}
+
+------=_NextPart_000_0000_01CCD548.423C2020--

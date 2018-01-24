@@ -1,0 +1,440 @@
+From: <¥Ñ Windows Internet Explorer 8 Àx¦s>
+Subject: Jasmin Instructions
+Date: Tue, 17 Jan 2012 18:49:16 +0800
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----=_NextPart_000_0000_01CCD548.B6E6C380"
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2900.6157
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0000_01CCD548.B6E6C380
+Content-Type: text/html;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://jasmin.sourceforge.net/instructions.html
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Jasmin Instructions</TITLE>
+<META content=3D"text/html; charset=3Dbig5" =
+http-equiv=3DContent-Type><LINK=20
+rel=3Dstylesheet type=3Dtext/css =
+href=3D"http://jasmin.sourceforge.net/style.css">
+<META name=3DGENERATOR content=3D"MSHTML 8.00.6001.19170"></HEAD>
+<BODY>
+<TABLE id=3DTable1>
+  <TBODY>
+  <TR>
+    <TD width=3D550>
+      <CENTER>
+      <P><IMG src=3D"http://jasmin.sourceforge.net/jasmin_icon.jpg"></P>
+      <P>
+      <DIV class=3Dh1>JASMIN INSTRUCTIONS</DIV>Jonathan Meyer, July 1996 =
+
+      <P></P></CENTER>
+      <H1>Introduction</H1>This document shows the syntax and the types =
+of=20
+      parameters required by each Java VM instruction in Jasmin. It also =
+shows=20
+      brief illustrative examples.
+      <P>See <A href=3D"http://jasmin.sourceforge.net/guide.html">The =
+Jasmin User=20
+      Guide</A> for a description of other aspects of the Jasmin syntax.
+      <P>
+      <H1>Local variable instructions</H1>The following instructions use =
+local=20
+      variables:
+      <P><PRE>    ret &lt;var-num&gt;
+    aload &lt;var-num&gt;
+    astore &lt;var-num&gt;
+    dload &lt;var-num&gt;
+    dstore &lt;var-num&gt;
+    fload &lt;var-num&gt;
+    fstore &lt;var-num&gt;
+    iload &lt;var-num&gt;
+    istore &lt;var-num&gt;
+    lload &lt;var-num&gt;
+    lstore &lt;var-num&gt;
+</PRE>for example:
+      <P><PRE>    aload 1    ; push local variable 1 onto the stack
+    ret 2      ; return to the address held in local variable 2
+</PRE>
+      <H1>The bipush, sipush and iinc instructions</H1>The bipush and =
+sipush=20
+      instructions take an integer as a parameter:
+      <P><PRE>    bipush &lt;int&gt;
+    sipush &lt;int&gt;
+</PRE>for example:
+      <P><PRE>    bipush 100    ; push 100 onto the stack
+</PRE>The iinc instruction takes two integer parameters:
+      <P><PRE>    iinc  &lt;var-num&gt; &lt;amount&gt;
+</PRE>for example:
+      <P><PRE>    iinc 3 -10    ; subtract 10 from local variable 3
+</PRE>
+      <H1>Branch instructions</H1>The following instructions take a =
+label as a=20
+      parameter: <PRE>    goto  &lt;label&gt;
+    goto_w  &lt;label&gt;
+    if_acmpeq  &lt;label&gt;
+    if_acmpne  &lt;label&gt;
+    if_icmpeq  &lt;label&gt;
+    if_icmpge  &lt;label&gt;
+    if_icmpgt  &lt;label&gt;
+    if_icmple  &lt;label&gt;
+    if_icmplt  &lt;label&gt;
+    if_icmpne  &lt;label&gt;
+    ifeq  &lt;label&gt;
+    ifge  &lt;label&gt;
+    ifgt  &lt;label&gt;
+    ifle  &lt;label&gt;
+    iflt  &lt;label&gt;
+    ifne  &lt;label&gt;
+    ifnonnull  &lt;label&gt;
+    ifnull  &lt;label&gt;
+    jsr  &lt;label&gt;
+    jsr_w  &lt;label&gt;
+</PRE>For example:
+      <P><PRE>
+    Label1:
+       goto Label1    ; jump to the code at Label1
+                      ; (an infinite loop!)
+
+</PRE>
+      <H1>Class and object operations</H1>The following instructions =
+take a=20
+      class name as a parameter: <PRE>    anewarray  &lt;class&gt;
+    checkcast  &lt;class&gt;
+    instanceof &lt;class&gt;
+    new        &lt;class&gt;
+</PRE>For example:
+      <P><PRE>    new java/lang/String   ; create a new String object
+</PRE>
+      <H1>Method invokation</H1>The following instructions are used to =
+invoke=20
+      methods:
+      <P><PRE>    invokenonvirtual  &lt;method-spec&gt;
+    invokestatic      &lt;method-spec&gt;
+    invokevirtual     &lt;method-spec&gt;
+</PRE>for example:
+      <P><PRE>
+    ; invokes java.io.PrintStream.println(String);
+
+    invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+
+</PRE>A method specification is formed of three parts: the characters=20
+      before the last '/' form the class name. The characters between =
+the last=20
+      '/' and '(' are the method name. The rest of the string is the =
+descriptor.
+      <P><PRE>     foo/baz/Myclass/myMethod(Ljava/lang/String;)V
+     ---------------         ---------------------
+           |         --------         |
+           |            |             |
+         class        method       descriptor
+</PRE>A special case is invokeinterface, which takes a =
+&lt;method-spec&gt;=20
+      and an integer indicating how many arguments the method takes:
+      <P><PRE>     invokeinterface &lt;method-spec&gt; &lt;num-args&gt;
+</PRE>for example:
+      <P><PRE>     invokeinterface foo/Baz/myMethod(I)V 1
+</PRE>
+      <H1>Field manipulation instructions</H1>The four instructions =
+getfield,=20
+      getstatic, putfield and putstatic have the form:
+      <P><PRE>    getfield  &lt;field-spec&gt; &lt;descriptor&gt;
+    getstatic  &lt;field-spec&gt; &lt;descriptor&gt;
+    putfield  &lt;field-spec&gt; &lt;descriptor&gt;
+    putstatic  &lt;field-spec&gt; &lt;descriptor&gt;
+</PRE>for example: <PRE>    ; get java.lang.System.out, which is a =
+PrintStream
+    getstatic java/lang/System/out Ljava/io/PrintStream;
+</PRE>&lt;field-spec&gt; is composed of two parts, a classname and a=20
+      fieldname. The classname is all of the characters in the=20
+      &lt;field-spec&gt; up to the last '/' character, and the fieldname =
+is the=20
+      rest of the characters after the last '/'. For example:=20
+      <P><PRE>      foo/baz/AnotherClass/anotherFunField
+      -- class name ------ --field name --
+</PRE>&lt;descriptor&gt; is the Java type descriptor of the field. For=20
+      example:
+      <P><PRE>    Ljava/io/PrintStream;
+</PRE>
+      <H1>The newarray instruction</H1>The newarray instruction is =
+followed by=20
+      the type of the array,
+      <P><PRE>    newarray  &lt;array-type&gt;
+</PRE>for example:
+      <P><PRE>    newarray int
+    newarray short
+    newarray float
+    etc.
+</PRE>
+      <H1>The multianewarray instruction</H1>The multianewarray =
+instruction=20
+      takes two parameters, the type descriptor for the array and the =
+number of=20
+      dimensions to allocate:
+      <P><PRE>     multianewarray  &lt;array-descriptor&gt; =
+&lt;num-dimensions&gt;
+</PRE>for example:
+      <P><PRE>     multianewarray [[[I 2
+</PRE>
+      <H1>The ldc and ldc_w instructions</H1>The ldc and ldc_w =
+instructions are=20
+      followed by a constant:
+      <P><PRE>     ldc  &lt;constant&gt;
+     ldc_w  &lt;constant&gt;
+</PRE>&lt;constant&gt; is either an integer, a floating point number, or =
+a=20
+      quoted string. For example:
+      <P><PRE>     ldc 1.2              ; push a float
+     ldc 10               ; push an int
+     ldc "Hello World"    ; push a String
+     ldc_w 3.141592654    ; push PI as a double
+</PRE>
+      <H1>The lookupswitch instruction</H1>The lookupswitch instruction =
+has the=20
+      syntax:
+      <P><PRE>    &lt;lookupswitch&gt; ::=3D
+        lookupswitch
+            &lt;int1&gt; : &lt;label1&gt;
+            &lt;int2&gt; : &lt;label2&gt;
+            ...
+            default : &lt;default-label&gt;
+</PRE>For example:
+      <P><PRE>    ; If the int on the stack is 3, jump to Label1.
+    ; If it is 5, jump to Label2.
+    ; Otherwise jump to DefaultLabel.
+
+    lookupswitch
+            3 : Label1
+            5 : Label2
+      default : DefaultLabel
+
+    Label1:
+       ... got 3
+
+    Label2:
+       ... got 5
+
+    DefaultLabel:
+       ... got something else
+</PRE>
+      <H1>The tableswitch instruction</H1>The tableswitch instruction =
+has the=20
+      syntax:
+      <P><PRE>    &lt;tableswitch&gt; ::=3D
+        tableswitch &lt;low&gt;
+            &lt;label1&gt;
+            &lt;label2&gt;
+            ...
+            default : &lt;default-label&gt;
+</PRE>For example:
+      <P><PRE>  ; If the int on the stack is 0, jump to Label1.
+  ; If it is 1, jump to Label2.
+  ; Otherwise jump to DefaultLabel.
+
+  tableswitch 0
+        Label1
+        Label2
+     default : DefaultLabel
+
+  Label1:
+     ... got 0
+
+  Label2:
+     ... got 1
+
+  DefaultLabel:
+     ... got something else
+</PRE>
+      <H1>No parameter</H1>The following instructions (the majority) =
+take no=20
+      parameters:
+      <P>
+      <DL>
+        <DD>aaload aastore aconst_null aload_0 aload_1 aload_2 aload_3 =
+areturn=20
+        arraylength astore_0 astore_1 astore_2 astore_3 athrow baload =
+bastore=20
+        breakpoint caload castore d2f d2i d2l dadd daload dastore dcmpg =
+dcmpl=20
+        dconst_0 dconst_1 ddiv dload_0 dload_1 dload_2 dload_3 dmul dneg =
+drem=20
+        dreturn dstore_0 dstore_1 dstore_2 dstore_3 dsub dup dup2 =
+dup2_x1=20
+        dup2_x2 dup_x1 dup_x2 f2d f2i f2l fadd faload fastore fcmpg =
+fcmpl=20
+        fconst_0 fconst_1 fconst_2 fdiv fload_0 fload_1 fload_2 fload_3 =
+fmul=20
+        fneg frem freturn fstore_0 fstore_1 fstore_2 fstore_3 fsub i2d =
+i2f i2l=20
+        iadd iaload iand iastore iconst_0 iconst_1 iconst_2 iconst_3 =
+iconst_4=20
+        iconst_5 iconst_m1 idiv iload_0 iload_1 iload_2 iload_3 imul =
+ineg=20
+        int2byte int2char int2short ior irem ireturn ishl ishr istore_0 =
+istore_1=20
+        istore_2 istore_3 isub iushr ixor l2d l2f l2i ladd laload land =
+lastore=20
+        lcmp lconst_0 lconst_1 ldiv lload_0 lload_1 lload_2 lload_3 lmul =
+lneg=20
+        lor lrem lreturn lshl lshr lstore_0 lstore_1 lstore_2 lstore_3 =
+lsub=20
+        lushr lxor monitorenter monitorexit nop pop pop2 return saload =
+sastore=20
+        swap </DD></DL>for example: <PRE>    pop         ; remove the =
+top item from the stack
+    iconst_1    ; push 1 onto the stack
+    swap        ; swap the top two items on the stack
+</PRE>
+      <HR>
+
+      <ADDRESS>Copyright (c) Jonathan Meyer, July 1996</ADDRESS>
+      <HR>
+      <A href=3D"http://mrl.nyu.edu/meyer/jvm/jasmin.html">Jasmin =
+Home</A> | <A=20
+      href=3D"http://mrl.nyu.edu/meyer/">Jon Meyer's Home</A>=20
+</TR></TBODY></TABLE></BODY></HTML>
+
+------=_NextPart_000_0000_01CCD548.B6E6C380
+Content-Type: image/jpeg
+Content-Transfer-Encoding: base64
+Content-Location: http://jasmin.sourceforge.net/jasmin_icon.jpg
+
+/9j/4AAQSkZJRgABAgEASwBLAAD/7QHwUGhvdG9zaG9wIDMuMAA4QklNA+kAAAAAAHgAAwAAAEgA
+SAAAAAAC2gIo/+H/4gL5AkYDRwUoA/wAAgAAAEgASAAAAAAC2AIoAAEAAABkAAAAAQADAwMAAAAB
+Jw8AAQABAAAAAAAAAAAAAAAAYAgAGQGQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4
+QklNA+0AAAAAABAASwAAAAEAAQBLAAAAAQABOEJJTQPzAAAAAAAIAAAAAAAAAAA4QklNJxAAAAAA
+AAoAAQAAAAAAAAACOEJJTQP1AAAAAABIAC9mZgABAGxmZgAGAAAAAAABAC9mZgABAKGZmgAGAAAA
+AAABADIAAAABAFoAAAAGAAAAAAABADUAAAABAC0AAAAGAAAAAAABOEJJTQP4AAAAAABwAAD/////
+////////////////////////A+gAAAAA/////////////////////////////wPoAAAAAP//////
+//////////////////////8D6AAAAAD/////////////////////////////A+gAADhCSU0EAAAA
+AAAAAgACOEJJTQQCAAAAAAAeAAAAAAAAAAAAAAAAAAAAAQABAAEAAAAAAAIAAAACOEJJTQQGAAAA
+AAACAAT/7gAOQWRvYmUAZAAAAAAB/9sAhAAGBAQEBQQGBQUGCQYFBgkLCAYGCAsMCgoLCgoMEAwM
+DAwMDBAMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMAQcHBw0MDRgQEBgUDg4OFBQODg4OFBEM
+DAwMDBERDAwMDAwMEQwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCABZAFwDAREAAhEB
+AxEB/8QBogAAAAcBAQEBAQAAAAAAAAAABAUDAgYBAAcICQoLAQACAgMBAQEBAQAAAAAAAAABAAID
+BAUGBwgJCgsQAAIBAwMCBAIGBwMEAgYCcwECAxEEAAUhEjFBUQYTYSJxgRQykaEHFbFCI8FS0eEz
+FmLwJHKC8SVDNFOSorJjc8I1RCeTo7M2F1RkdMPS4ggmgwkKGBmElEVGpLRW01UoGvLj88TU5PRl
+dYWVpbXF1eX1ZnaGlqa2xtbm9jdHV2d3h5ent8fX5/c4SFhoeIiYqLjI2Oj4KTlJWWl5iZmpucnZ
+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
+
+------=_NextPart_000_0000_01CCD548.B6E6C380
+Content-Type: text/css;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://jasmin.sourceforge.net/style.css
+
+TD {
+	LINE-HEIGHT: 16px; FONT-FAMILY: Verdana,Arial,Helvetica,sans-serif; =
+COLOR: #000000; FONT-SIZE: 12px
+}
+TD H1 {
+	PADDING-BOTTOM: 1px; LINE-HEIGHT: 24px; BACKGROUND-COLOR: #303030; =
+PADDING-LEFT: 4px; PADDING-RIGHT: 1px; FONT-FAMILY: Tahoma; COLOR: =
+white; FONT-SIZE: 20px; FONT-WEIGHT: bold; PADDING-TOP: 1px
+}
+TD H2 {
+	LINE-HEIGHT: 16px; FONT-FAMILY: Tahoma; COLOR: #000000; FONT-SIZE: =
+14px; FONT-WEIGHT: bold
+}
+TD H3 {
+	LINE-HEIGHT: 16px; FONT-FAMILY: Tahoma; COLOR: #000000; FONT-SIZE: =
+12px; FONT-WEIGHT: bold
+}
+.h1 {
+	LINE-HEIGHT: 20px; FONT-FAMILY: Times; COLOR: #000000; FONT-SIZE: 18px; =
+FONT-WEIGHT: bold
+}
+A {
+	COLOR: #b11; TEXT-DECORATION: underline
+}
+A:visited {
+	COLOR: #b11
+}
+A:hover {
+	COLOR: #f88
+}
+PRE.code {
+	LINE-HEIGHT: 14px; FONT-FAMILY: courier new; COLOR: #202060; FONT-SIZE: =
+12px
+}
+FONT.code {
+	LINE-HEIGHT: 14px; FONT-FAMILY: courier new; COLOR: #202060; FONT-SIZE: =
+12px
+}
+
+------=_NextPart_000_0000_01CCD548.B6E6C380--
