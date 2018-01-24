@@ -82,7 +82,7 @@
 	invokestatic java/lang/String/valueOf(F)Ljava/lang/String;
 	invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
 	getstatic foo/d [F
-	ldc 1
+	ldc 3
 	ldc 3
 	isub
 	ldc 3.300000
@@ -114,7 +114,7 @@
 	invokestatic java/lang/String/valueOf(F)Ljava/lang/String;
 	invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
 	getstatic foo/e [[[I
-	ldc 3
+	ldc 4
 	ldc 3
 	isub
 	aaload
@@ -129,7 +129,7 @@
 	iastore
 	getstatic foo/a I
 	getstatic foo/e [[[I
-	ldc 3
+	ldc 4
 	ldc 3
 	isub
 	aaload

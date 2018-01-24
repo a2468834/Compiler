@@ -649,20 +649,20 @@ void GenLoadArray(struct nodeType *array)
   fprintf(output_file, "\tgetstatic foo/%s %s\n", array_entry->name, array_tag);
   
   struct nodeType *tail_node = array->child;
-  struct nodeType *access_index_node;
+  int access_index;
   for(int i=0; i<(array_depth-1); i++)
   {
-    access_index_node = nthChild(2, tail_node);
+    access_index = EvaIntExpr(nthChild(2, tail_node));
     
-    fprintf(output_file, "\tldc %d\n", access_index_node->iValue);
+    fprintf(output_file, "\tldc %d\n", access_index);
     fprintf(output_file, "\tldc %d\n", array_entry->index[i].start);
     fprintf(output_file, "\tisub\n");
     fprintf(output_file, "\taaload\n");
     tail_node = nthChild(1, tail_node);
   }
 
-  access_index_node = nthChild(2, tail_node);
-  fprintf(output_file, "\tldc %d\n", access_index_node->iValue);
+  access_index = EvaIntExpr(nthChild(2, tail_node));
+  fprintf(output_file, "\tldc %d\n", access_index);
   fprintf(output_file, "\tldc %d\n", array_entry->index[array_depth-1].start);
   fprintf(output_file, "\tisub\n");
 }
