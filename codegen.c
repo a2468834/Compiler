@@ -121,77 +121,52 @@ double EvaRealExpr(struct nodeType *node)
 
 void EvaUnsimpIntExpr(struct nodeType *node)
 {
-  if(CheckSimpleExpr(node)==true)
+  if(node->child_num != 0)
   {
-    int result = EvaIntExpr(node);
-    fprintf(output_file, "\tldc %d\n", result);
-  }
-
-  else
-  {
-    struct nodeType *left_node = nthChild(1, node);
-    struct nodeType *right_node = nthChild(2, node);
-
-    if(left_node->nodeType==NODE_VARIABLE)
+    if(node->nodeType != NODE_VARIABLE && node->nodeType != NODE_UOP)
     {
-      fprintf(output_file, "\tgetstatic foo/%s I\n", left_node->string);
-      EvaUnsimpIntExpr(right_node);
-      switch(node->op)
-      {
-        case OP_ADD:
-        {
-          fprintf(output_file, "\tiadd\n");
-          break;
-        }
-
-        case OP_SUB:
-        {
-          fprintf(output_file, "\tisub\n");
-          break;
-        }
-
-        case OP_MUL:
-        {
-          fprintf(output_file, "\timul\n");
-          break;
-        }
-        case OP_DIV:
-        {
-          fprintf(output_file, "\tidiv\n");
-          break;
-        }
-      }
+      EvaUnsimpIntExpr(nthChild(1, node));
+      EvaUnsimpIntExpr(nthChild(2, node));
     }
-
-    else
+  }
+  
+  if(node->nodeType==NODE_VARIABLE)
+  {
+    fprintf(output_file, "\tgetstatic foo/%s I\n", node->string);
+  }
+  else if(node->nodeType==DIGSEQ)
+  {
+    fprintf(output_file, "\tldc %d\n", node->iValue);
+  }
+  else if(node->nodeType==NODE_UOP)
+  {
+    fprintf(output_file, "\tldc %d\n", node->iValue);
+  }
+  else if(node->nodeType==NODE_OP)
+  {
+    switch(node->op)
     {
-      EvaUnsimpIntExpr(left_node);
-      EvaUnsimpIntExpr(right_node);
-
-      switch(node->op)
+      case OP_ADD:
       {
-        case OP_ADD:
-        {
-          fprintf(output_file, "\tiadd\n");
-          break;
-        }
+        fprintf(output_file, "\tiadd\n");
+        break;
+      }
 
-        case OP_SUB:
-        {
-          fprintf(output_file, "\tisub\n");
-          break;
-        }
+      case OP_SUB:
+      {
+        fprintf(output_file, "\tisub\n");
+        break;
+      }
 
-        case OP_MUL:
-        {
-          fprintf(output_file, "\timul\n");
-          break;
-        }
-        case OP_DIV:
-        {
-          fprintf(output_file, "\tidiv\n");
-          break;
-        }
+      case OP_MUL:
+      {
+        fprintf(output_file, "\timul\n");
+        break;
+      }
+      case OP_DIV:
+      {
+        fprintf(output_file, "\tidiv\n");
+        break;
       }
     }
   }
