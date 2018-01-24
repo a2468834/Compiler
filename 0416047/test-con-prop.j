@@ -82,7 +82,7 @@
 	invokestatic java/lang/String/valueOf(F)Ljava/lang/String;
 	invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
 	getstatic foo/d [F
-	ldc 1
+	ldc 3
 	ldc 3
 	isub
 	ldc 3.300000
