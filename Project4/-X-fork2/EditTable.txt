@@ -1,0 +1,37 @@
+  NODE_OP, => NODE_operator
+  NODE_SUBPROGRAM, => NODE_subprogram_declarations
+  NODE_IDLIST, => NODE_identifier_list
+  NODE_DECLARATIONS, => NODE_declarations
+  NODE_SUBPROGRAMS, => NODE_subprogram_declarations
+  NODE_OPTIONALVAR, => NODE_optional_var
+  NODE_STMTLIST, => NODE_statement_list
+  NODE_ARGUMENTS, => NODE_arguments
+  NODE_PARAMLIST => NODE_parameter_list
+  NODE_STMT, => NODE_statement
+  NODE_EXPRLIST, => NODE_expression_list
+  NODE_TAIL, => NODE_tail
+  NODE_PROG, => NODE_prog
+
+  NODE_UOP, => deleted
+
+  NODE_SYM_REF, => never used
+  NODE_TOKEN, => never used
+  NODE_STDTYPE, => never used
+  NODE_INT, => never used
+  NODE_ARRAY, => never used  
+  NODE_SUBPROGRAMHEAD, => never used
+  NODE_COMPOUND, => never used
+  NODE_OPTIONALSTMT, => never used
+  NODE_SIMPLEEXPR, => never used
+  NODE_TERM, => never used
+  NODE_EXPR, => never used
+  NODE_ID, => never used
+  NODE_FACTOR, => never used
+  NODE_ADDOP, => never used
+  NODE_MULOP, => never used
+  NODE_RELOP, => never used
+  NODE_NUM, => never used
+  
+  NODE_VARIABLE, => temporarily un-changed
+  NODE_CALLFUNC, => temporarily un-changed
+  NODE_PROCEDURESTMT, => temporarily un-changed
