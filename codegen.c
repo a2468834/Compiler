@@ -132,7 +132,17 @@ void EvaUnsimpIntExpr(struct nodeType *node)
   
   if(node->nodeType==NODE_VARIABLE)
   {
-    fprintf(output_file, "\tgetstatic foo/%s I\n", node->string);
+    struct SymTableEntry* entry = findSymbol(node->string, 1);
+    if(entry->arraydepth>0)
+    {
+      GenLoadArray(node);
+      fprintf(output_file, "\tiaload\n");
+    }
+    else
+    {
+      fprintf(output_file, "\tgetstatic foo/%s I\n", node->string);
+    }
+    //fprintf(output_file, "\tgetstatic foo/%s I\n", node->string);
   }
   else if(node->nodeType==DIGSEQ)
   {
@@ -185,7 +195,17 @@ double EvaUnsimpRealExpr(struct nodeType *node)
   
   if(node->nodeType==NODE_VARIABLE)
   {
-    fprintf(output_file, "\tgetstatic foo/%s F\n", node->string);
+    struct SymTableEntry* entry = findSymbol(node->string, 1);
+    if(entry->arraydepth>0)
+    {
+      GenLoadArray(node);
+      fprintf(output_file, "\tfaload\n");
+    }
+    else
+    {
+      fprintf(output_file, "\tgetstatic foo/%s F\n", node->string);
+    }
+    //fprintf(output_file, "\tgetstatic foo/%s F\n", node->string);
   }
   else if(node->nodeType==REALNUMBER)
   {
@@ -517,12 +537,13 @@ void GenMainMethod(struct nodeType *main_method)
               //printf("AA\n");
               int result = EvaIntExpr(expression_node);
               fprintf(output_file, "\tldc %d\n", result);
-              fprintf(output_file, "\tputstatic foo/%s I\n", variable_node->string);
+              //fprintf(output_file, "\tputstatic foo/%s I\n", variable_node->string);
             }
             else
             {
+              //printf("$$\n");
               EvaUnsimpIntExpr(expression_node);
-              fprintf(output_file, "\tputstatic foo/%s I\n", variable_node->string);
+              //fprintf(output_file, "\tputstatic foo/%s I\n", variable_node->string);
             }
 
             fprintf(output_file, "\tiastore\n");
@@ -536,12 +557,12 @@ void GenMainMethod(struct nodeType *main_method)
               //printf("BB\n");
               double result = EvaRealExpr(expression_node);
               fprintf(output_file, "\tldc %f\n", result);
-              fprintf(output_file, "\tputstatic foo/%s F\n", variable_node->string);
+              //fprintf(output_file, "\tputstatic foo/%s F\n", variable_node->string);
             }
             else
             {
               EvaUnsimpRealExpr(expression_node);
-              fprintf(output_file, "\tputstatic foo/%s F\n", variable_node->string);
+              //fprintf(output_file, "\tputstatic foo/%s F\n", variable_node->string);
             }
 
             fprintf(output_file, "\tfastore\n");
@@ -575,6 +596,7 @@ void GenMainMethod(struct nodeType *main_method)
           }
           else
           {
+            printf("%%\n");
             EvaUnsimpRealExpr(expression_node);
             fprintf(output_file, "\tputstatic foo/%s F\n", variable_node->string);
           }

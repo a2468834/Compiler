@@ -81,6 +81,84 @@
 	getstatic foo/c F
 	invokestatic java/lang/String/valueOf(F)Ljava/lang/String;
 	invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+	getstatic foo/d [F
+	ldc 3
+	ldc 3
+	isub
+	ldc 3.300000
+	fastore
+	getstatic foo/d [F
+	ldc 3
+	ldc 3
+	isub
+	faload
+	putstatic foo/c F
+	getstatic java/lang/System/out Ljava/io/PrintStream;
+	getstatic foo/c F
+	invokestatic java/lang/String/valueOf(F)Ljava/lang/String;
+	invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+	getstatic foo/c F
+	getstatic foo/d [F
+	ldc 3
+	ldc 3
+	isub
+	faload
+	fadd
+	putstatic foo/c F
+	getstatic java/lang/System/out Ljava/io/PrintStream;
+	getstatic foo/c F
+	invokestatic java/lang/String/valueOf(F)Ljava/lang/String;
+	invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+	getstatic foo/e [[[I
+	ldc 3
+	ldc 3
+	isub
+	aaload
+	ldc 4
+	ldc 1
+	isub
+	aaload
+	ldc 5
+	ldc 3
+	isub
+	ldc -21
+	iastore
+	getstatic foo/a I
+	getstatic foo/e [[[I
+	ldc 3
+	ldc 3
+	isub
+	aaload
+	ldc 4
+	ldc 1
+	isub
+	aaload
+	ldc 5
+	ldc 3
+	isub
+	iaload
+	iadd
+	putstatic foo/a I
+	getstatic java/lang/System/out Ljava/io/PrintStream;
+	getstatic foo/a I
+	invokestatic java/lang/String/valueOf(I)Ljava/lang/String;
+	invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+	ldc 5
+	putstatic foo/a I
+	getstatic foo/a I
+	ldc 6
+	iadd
+	getstatic foo/a I
+	iadd
+	getstatic foo/a I
+	iadd
+	getstatic foo/a I
+	iadd
+	putstatic foo/a I
+	getstatic java/lang/System/out Ljava/io/PrintStream;
+	getstatic foo/a I
+	invokestatic java/lang/String/valueOf(I)Ljava/lang/String;
+	invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
 	return
 .end method
 
